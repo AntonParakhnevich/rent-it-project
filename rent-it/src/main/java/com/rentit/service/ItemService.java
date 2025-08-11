@@ -4,6 +4,8 @@ import com.rentit.dto.ItemDto;
 import com.rentit.model.Item;
 import com.rentit.model.ItemCategory;
 import com.rentit.repository.ItemRepository;
+import com.rentit.user.api.UserConnector;
+import com.rentit.user.api.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
+    private final UserConnector userConnector;
 
     @Transactional
     public ItemDto createItem(ItemDto itemDto) {
+        UserResponse userById = userConnector.getUserById(itemDto.getOwnerId());
         Item item = new Item();
         item.setTitle(itemDto.getTitle());
         item.setDescription(itemDto.getDescription());
