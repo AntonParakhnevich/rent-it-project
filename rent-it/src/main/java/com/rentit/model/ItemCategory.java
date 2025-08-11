@@ -1,0 +1,15 @@
+package com.rentit.model;
+
+public enum ItemCategory {
+    ELECTRONICS,
+    TOOLS,
+    SPORTS_EQUIPMENT,
+    CAMPING_GEAR,
+    PARTY_SUPPLIES,
+    MUSICAL_INSTRUMENTS,
+    PHOTOGRAPHY_EQUIPMENT,
+    GARDENING_TOOLS,
+    FURNITURE,
+    CLOTHING,
+    OTHER
+} 
