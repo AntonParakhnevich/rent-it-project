@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/debezium" />
+            <option value="$PROJECT_DIR$/debezium/debezium" />
+            <option value="$PROJECT_DIR$/debezium/debezium-api" />
+            <option value="$PROJECT_DIR$/notification" />
+            <option value="$PROJECT_DIR$/notification/internal-notification" />
+            <option value="$PROJECT_DIR$/notification/internal-notification/internal-notification" />
+            <option value="$PROJECT_DIR$/notification/internal-notification/internal-notification-api" />
+            <option value="$PROJECT_DIR$/rent-it" />
+            <option value="$PROJECT_DIR$/user" />
+            <option value="$PROJECT_DIR$/user/user" />
+            <option value="$PROJECT_DIR$/user/user-api" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
