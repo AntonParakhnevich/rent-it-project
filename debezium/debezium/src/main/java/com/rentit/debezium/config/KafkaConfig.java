@@ -4,14 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rentit.debezium.api.Event;
-import com.rentit.debezium.config.deserializer.LocalDateJsonDeserializer;
-import com.rentit.debezium.config.deserializer.LocalDateTimeJsonDeserializer;
 import com.rentit.debezium.config.serializer.KafkaJsonSerializer;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Properties;
 import java.util.TimeZone;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -20,19 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Properties;
-
 @Configuration
 public class KafkaConfig {
 
   @Bean
   public ObjectMapper objectMapper() {
-    var deserializers = new SimpleModule()
-        .addDeserializer(LocalDateTime.class, new LocalDateTimeJsonDeserializer())
-        .addDeserializer(LocalDate.class, new LocalDateJsonDeserializer());
     return new ObjectMapper()
         .registerModule(new JavaTimeModule())
-        .registerModule(deserializers)
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)

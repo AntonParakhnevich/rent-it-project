@@ -61,18 +61,6 @@ public class MySqlDebeziumEngineConfig {
   @Value("${debezium.mysql.serverTimezone:UTC}")
   private String serverTimezone;
 
-  @Value("${debezium.mysql.timePrecisionMode:adaptive_time_microseconds}")
-  private String timePrecisionMode;
-
-  @Value("${debezium.mysql.dateHandlingMode:string}")
-  private String dateHandlingMode;
-
-  @Value("${debezium.mysql.datetimeHandlingMode:string}")
-  private String datetimeHandlingMode;
-
-  @Value("${debezium.mysql.timestampHandlingMode:string}")
-  private String timestampHandlingMode;
-
   @Bean
   public DebeziumEngine<ChangeEvent<String, String>> mysqlDebeziumEngine() throws IOException {
     ensureParentDirs(offsetFile);

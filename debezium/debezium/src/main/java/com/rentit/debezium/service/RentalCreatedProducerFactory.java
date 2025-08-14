@@ -4,13 +4,11 @@ import com.rentit.debezium.api.Event;
 import com.rentit.debezium.api.RentalCreatedEvent;
 import com.rentit.debezium.model.ChangeRecordEvent;
 import com.rentit.debezium.model.Table;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RentalsCreatedProducerFactory implements Producer {
+public class RentalCreatedProducerFactory implements Producer {
 
   @Override
   public String tableName() {
@@ -43,7 +41,7 @@ public class RentalsCreatedProducerFactory implements Producer {
     if (event.getAfter().get("end_date") != null) {
       rentalCreatedEvent.setDateEnd(ZonedDateTime.parse(event.getAfter().get("end_date").toString()).toLocalDateTime());
     }
-    rentalCreatedEvent.setKey("RENTALS_CREATED");
+    rentalCreatedEvent.setKey("RENTAL_CREATED");
 
     return rentalCreatedEvent;
   }
