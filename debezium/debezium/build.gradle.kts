@@ -39,6 +39,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-websocket")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.9")
+  implementation("org.springframework.boot:spring-boot-configuration-processor:3.5.3")
 
   // Database
   runtimeOnly("com.mysql:mysql-connector-j")

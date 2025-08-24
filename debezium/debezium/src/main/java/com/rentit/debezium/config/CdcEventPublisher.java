@@ -27,9 +27,11 @@ public class CdcEventPublisher {
 
   private final KafkaProducer<String, Event> kafkaProducer;
   private final ObjectMapper objectMapper;
-  private final String rentalsCreatedTopic;
+  //  private final String rentalsCreatedTopic;
   private final List<Producer> tableNameToProducers;
   private Map<String, List<Producer>> tableNameToProducersMap;
+
+  private Map<String, String> topicsMap;
 
   @PostConstruct
   public void startEngine() {
@@ -42,11 +44,13 @@ public class CdcEventPublisher {
       KafkaProducer<String, Event> kafkaProducer,
       ObjectMapper objectMapper,
       @Value("${kafka.topics.rentalsCreated:RENTALS_CREATED}") String rentalsCreatedTopic,
-      List<Producer> tableNameToProducers) {
+      List<Producer> tableNameToProducers,
+      KafkaTopicsConfig kafkaTopicsConfig
+  ) {
     this.kafkaProducer = kafkaProducer;
     this.objectMapper = objectMapper;
-    this.rentalsCreatedTopic = rentalsCreatedTopic;
     this.tableNameToProducers = tableNameToProducers;
+    this.topicsMap = kafkaTopicsConfig.getTopics();
   }
 
   public void handle(ChangeEvent<String, String> event) {
@@ -73,10 +77,9 @@ public class CdcEventPublisher {
       changeRecordEvent.setOperation(payload.get("op").toString());
 
       tableNameToProducersMap.get(table)
-          .forEach(p -> {
-            Optional.ofNullable(p.produce(changeRecordEvent))
-                .ifPresent(e -> kafkaProducer.send(new ProducerRecord<>(rentalsCreatedTopic, e.getKey(), e)));
-          });
+          .forEach(producer -> Optional.ofNullable(producer.produce(changeRecordEvent))
+              .ifPresent(e -> kafkaProducer.send(new ProducerRecord<>(topicsMap.get(e.getKey()), e.getKey(), e)))
+          );
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
