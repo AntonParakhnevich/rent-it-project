@@ -1,12 +1,12 @@
-package com.rentit.debezium.config;
+package com.rentit.debezium.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rentit.debezium.api.Event;
+import com.rentit.debezium.config.KafkaTopicsConfig;
 import com.rentit.debezium.model.ChangeRecordEvent;
-import com.rentit.debezium.service.Producer;
 import io.debezium.engine.ChangeEvent;
 import jakarta.annotation.PostConstruct;
 import java.util.List;

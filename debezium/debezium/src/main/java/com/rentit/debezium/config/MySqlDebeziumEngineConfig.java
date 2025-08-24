@@ -1,6 +1,7 @@
 package com.rentit.debezium.config;
 
 import com.rentit.debezium.config.serializer.KafkaJsonSerializer;
+import com.rentit.debezium.service.CdcEventPublisher;
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.format.Json;
