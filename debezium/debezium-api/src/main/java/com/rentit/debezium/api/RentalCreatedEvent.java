@@ -10,13 +10,14 @@ public class RentalCreatedEvent extends Event {
   private Long itemId;
   private LocalDateTime dateStart;
   private LocalDateTime dateEnd;
+  private Long userId;
 
   public RentalCreatedEvent() {
     super();
   }
 
   public RentalCreatedEvent(String key, Long id, Double totalPrice, Double depositAmount, Long itemId,
-      LocalDateTime dateStart, LocalDateTime dateEnd) {
+      LocalDateTime dateStart, LocalDateTime dateEnd, Long userId) {
     super(key);
     this.id = id;
     this.totalPrice = totalPrice;
@@ -24,6 +25,7 @@ public class RentalCreatedEvent extends Event {
     this.itemId = itemId;
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
+    this.userId = userId;
   }
 
   public Long getId() {
@@ -72,5 +74,26 @@ public class RentalCreatedEvent extends Event {
 
   public void setDateEnd(LocalDateTime dateEnd) {
     this.dateEnd = dateEnd;
+  }
+
+  public Long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
+
+  @Override
+  public String toString() {
+    return "RentalCreatedEvent{" +
+        "id=" + id +
+        ", totalPrice=" + totalPrice +
+        ", depositAmount=" + depositAmount +
+        ", itemId=" + itemId +
+        ", dateStart=" + dateStart +
+        ", dateEnd=" + dateEnd +
+        ", userId=" + userId +
+        '}';
   }
 }

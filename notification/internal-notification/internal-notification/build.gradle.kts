@@ -22,6 +22,9 @@ repositories {
 }
 
 dependencies {
+
+  implementation(project(mapOf("path" to ":debezium:debezium-api")))
+
   // Spring Boot Starters
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")

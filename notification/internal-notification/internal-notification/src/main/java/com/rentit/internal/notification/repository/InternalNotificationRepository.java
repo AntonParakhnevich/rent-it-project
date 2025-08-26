@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface InternalNotificationRepository extends JpaRepository<InternalNotification, Long> {
 
   Page<InternalNotification> findByUserId(Long userId, Pageable pageable);
-
 }

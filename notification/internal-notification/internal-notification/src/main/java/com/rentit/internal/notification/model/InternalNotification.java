@@ -2,6 +2,8 @@ package com.rentit.internal.notification.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,6 +27,9 @@ public class InternalNotification {
   private LocalDateTime dateCreated;
   @Column(name = "is_viewed")
   private Boolean isViewed;
+  @Column(name = "type")
+  @Enumerated(EnumType.STRING)
+  private NotificationType type;
 
   @PrePersist
   protected void onCreate() {
@@ -72,6 +77,14 @@ public class InternalNotification {
     isViewed = viewed;
   }
 
+  public NotificationType getType() {
+    return type;
+  }
+
+  public void setType(NotificationType type) {
+    this.type = type;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -83,12 +96,13 @@ public class InternalNotification {
     InternalNotification that = (InternalNotification) o;
     return Objects.equals(id, that.id) && Objects.equals(userId, that.userId)
         && Objects.equals(message, that.message) && Objects.equals(dateCreated, that.dateCreated)
-        && Objects.equals(isViewed, that.isViewed);
+        && Objects.equals(isViewed, that.isViewed)
+        && Objects.equals(type, that.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, userId, message, dateCreated, isViewed);
+    return Objects.hash(id, userId, message, dateCreated, isViewed, type);
   }
 
   @Override
@@ -99,6 +113,7 @@ public class InternalNotification {
         ", message='" + message + '\'' +
         ", dateCreated=" + dateCreated +
         ", isViewed=" + isViewed +
+        ", type=" + type +
         '}';
   }
 }

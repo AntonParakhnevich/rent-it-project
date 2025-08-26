@@ -34,12 +34,15 @@ public class RentalCreatedProducerFactory implements Producer {
       rentalCreatedEvent.setItemId(Long.valueOf(event.getAfter().get("item_id").toString()));
     }
 
-    // Обработка временных полей - Debezium может передавать их как timestamp или строки
     if (event.getAfter().get("start_date") != null) {
-      rentalCreatedEvent.setDateStart(ZonedDateTime.parse(event.getAfter().get("start_date").toString()).toLocalDateTime());
+      rentalCreatedEvent.setDateStart(
+          ZonedDateTime.parse(event.getAfter().get("start_date").toString()).toLocalDateTime());
     }
     if (event.getAfter().get("end_date") != null) {
       rentalCreatedEvent.setDateEnd(ZonedDateTime.parse(event.getAfter().get("end_date").toString()).toLocalDateTime());
+    }
+    if (event.getAfter().get("user_id") != null) {
+      rentalCreatedEvent.setUserId(Long.valueOf(event.getAfter().get("user_id").toString()));
     }
     rentalCreatedEvent.setKey("RENTAL_CREATED");
 
