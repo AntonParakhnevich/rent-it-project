@@ -14,7 +14,7 @@ public class ItemsCreatedProducerFactory implements Producer{
   }
 
   @Override
-  public Event produce(ChangeRecordEvent event) {
-    return null;
+  public void produce(ChangeRecordEvent event) {
+    return;
   }
 }

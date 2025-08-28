@@ -24,7 +24,6 @@ public class RentalDto {
     @NotNull(message = "Дата окончания не может быть пустой")
     private LocalDateTime endDate;
     
-    @NotNull(message = "Общая стоимость не может быть пустой")
     @Positive(message = "Общая стоимость должна быть положительной")
     private BigDecimal totalPrice;
     

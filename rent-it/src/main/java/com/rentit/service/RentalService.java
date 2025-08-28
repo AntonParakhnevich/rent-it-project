@@ -6,85 +6,93 @@ import com.rentit.model.Rental;
 import com.rentit.model.RentalStatus;
 import com.rentit.repository.ItemRepository;
 import com.rentit.repository.RentalRepository;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class RentalService {
-    private final RentalRepository rentalRepository;
-    private final ItemRepository itemRepository;
 
-    @Transactional
-    public RentalDto createRental(RentalDto rentalDto) {
-        Item item = itemRepository.findById(rentalDto.getItemId())
-                .orElseThrow(() -> new RuntimeException("Предмет не найден"));
+  private final RentalRepository rentalRepository;
+  private final ItemRepository itemRepository;
 
-        // Проверка доступности предмета на указанные даты
-        List<Rental> overlappingRentals = rentalRepository.findOverlappingRentals(
-                item.getId(), rentalDto.getStartDate(), rentalDto.getEndDate());
-        
-        if (!overlappingRentals.isEmpty()) {
-            throw new RuntimeException("Предмет уже забронирован на указанные даты");
-        }
+  @Transactional
+  public RentalDto createRental(RentalDto rentalDto) {
+    Item item = itemRepository.findById(rentalDto.getItemId())
+        .orElseThrow(() -> new RuntimeException("Предмет не найден"));
 
-        Rental rental = new Rental();
-        rental.setItem(item);
-        rental.setUserId(rentalDto.getRenterId());
-        rental.setStartDate(rentalDto.getStartDate());
-        rental.setEndDate(rentalDto.getEndDate());
-        rental.setTotalPrice(rentalDto.getTotalPrice());
-        rental.setDepositAmount(rentalDto.getDepositAmount());
-        rental.setStatus(RentalStatus.PENDING);
+    // Проверка доступности предмета на указанные даты
+    List<Rental> overlappingRentals = rentalRepository.findOverlappingRentals(
+        item.getId(), rentalDto.getStartDate(), rentalDto.getEndDate());
 
-        Rental savedRental = rentalRepository.save(rental);
-        return convertToDto(savedRental);
+    if (!overlappingRentals.isEmpty()) {
+      throw new RuntimeException("Предмет уже забронирован на указанные даты");
     }
 
-    @Transactional(readOnly = true)
-    public RentalDto getRentalById(Long id) {
-        Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Аренда не найдена"));
-        return convertToDto(rental);
-    }
+    Rental rental = new Rental();
+    rental.setItem(item);
+    rental.setUserId(rentalDto.getRenterId());
+    rental.setStartDate(rentalDto.getStartDate());
+    rental.setEndDate(rentalDto.getEndDate());
+    rental.setTotalPrice(calculateTotalPrice(rentalDto.getStartDate(), rentalDto.getEndDate(), item.getPricePerDay()));
+    rental.setDepositAmount(rentalDto.getDepositAmount());
+    rental.setStatus(RentalStatus.PENDING);
 
-    @Transactional
-    public RentalDto updateRentalStatus(Long id, RentalStatus status) {
-        Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Аренда не найдена"));
+    Rental savedRental = rentalRepository.save(rental);
+    return convertToDto(savedRental);
+  }
 
-        rental.setStatus(status);
-        Rental updatedRental = rentalRepository.save(rental);
-        return convertToDto(updatedRental);
-    }
+  @Transactional(readOnly = true)
+  public RentalDto getRentalById(Long id) {
+    Rental rental = rentalRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Аренда не найдена"));
+    return convertToDto(rental);
+  }
 
-    @Transactional(readOnly = true)
-    public Page<RentalDto> getRentalsByRenter(Long renterId, Pageable pageable) {
-        return rentalRepository.findByUserId(renterId, pageable)
-                .map(this::convertToDto);
-    }
+  @Transactional
+  public RentalDto updateRentalStatus(Long id, RentalStatus status) {
+    Rental rental = rentalRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Аренда не найдена"));
 
-    @Transactional(readOnly = true)
-    public Page<RentalDto> getRentalsByOwner(Long ownerId, Pageable pageable) {
-        return rentalRepository.findByItemUserId(ownerId, pageable)
-                .map(this::convertToDto);
-    }
+    rental.setStatus(status);
+    Rental updatedRental = rentalRepository.save(rental);
+    return convertToDto(updatedRental);
+  }
 
-    private RentalDto convertToDto(Rental rental) {
-        RentalDto dto = new RentalDto();
-        dto.setId(rental.getId());
-        dto.setItemId(rental.getItem().getId());
-        dto.setRenterId(rental.getUserId());
-        dto.setStartDate(rental.getStartDate());
-        dto.setEndDate(rental.getEndDate());
-        dto.setTotalPrice(rental.getTotalPrice());
-        dto.setDepositAmount(rental.getDepositAmount());
-        dto.setStatus(rental.getStatus());
-        return dto;
-    }
+  @Transactional(readOnly = true)
+  public Page<RentalDto> getRentalsByRenter(Long renterId, Pageable pageable) {
+    return rentalRepository.findByUserId(renterId, pageable)
+        .map(this::convertToDto);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<RentalDto> getRentalsByOwner(Long ownerId, Pageable pageable) {
+    return rentalRepository.findByItemUserId(ownerId, pageable)
+        .map(this::convertToDto);
+  }
+
+  private RentalDto convertToDto(Rental rental) {
+    RentalDto dto = new RentalDto();
+    dto.setId(rental.getId());
+    dto.setItemId(rental.getItem().getId());
+    dto.setRenterId(rental.getUserId());
+    dto.setStartDate(rental.getStartDate());
+    dto.setEndDate(rental.getEndDate());
+    dto.setTotalPrice(rental.getTotalPrice());
+    dto.setDepositAmount(rental.getDepositAmount());
+    dto.setStatus(rental.getStatus());
+    return dto;
+  }
+
+  private BigDecimal calculateTotalPrice(LocalDateTime startDate, LocalDateTime endDate, BigDecimal pricePerDay) {
+    long days = ChronoUnit.DAYS.between(startDate, endDate);
+    return pricePerDay.multiply(new BigDecimal(days));
+  }
 } 

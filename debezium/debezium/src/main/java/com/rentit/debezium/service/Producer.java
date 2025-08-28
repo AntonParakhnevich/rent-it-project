@@ -6,6 +6,6 @@ import com.rentit.debezium.model.ChangeRecordEvent;
 public interface Producer {
   String tableName();
 
-  public Event produce(ChangeRecordEvent event);
+  void produce(ChangeRecordEvent event);
 
 }

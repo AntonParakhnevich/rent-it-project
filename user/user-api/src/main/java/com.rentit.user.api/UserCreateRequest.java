@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.Set;
 
-public class RegisterRequest {
+public class UserCreateRequest {
 
   @NotBlank
   @Email
@@ -23,10 +23,10 @@ public class RegisterRequest {
   @NotEmpty
   private Set<String> roles;
 
-  public RegisterRequest() {
+  public UserCreateRequest() {
   }
 
-  public RegisterRequest(String email, String password, String firstName, String lastName, String phoneNumber,
+  public UserCreateRequest(String email, String password, String firstName, String lastName, String phoneNumber,
       String description, Set<String> roles) {
     this.email = email;
     this.password = password;

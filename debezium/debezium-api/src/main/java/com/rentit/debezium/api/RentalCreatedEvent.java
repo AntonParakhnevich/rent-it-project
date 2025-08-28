@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public class RentalCreatedEvent extends Event {
 
-  private Long id;
   private Double totalPrice;
   private Double depositAmount;
   private Long itemId;
@@ -16,24 +15,15 @@ public class RentalCreatedEvent extends Event {
     super();
   }
 
-  public RentalCreatedEvent(String key, Long id, Double totalPrice, Double depositAmount, Long itemId,
+  public RentalCreatedEvent(Long id, Double totalPrice, Double depositAmount, Long itemId,
       LocalDateTime dateStart, LocalDateTime dateEnd, Long userId) {
-    super(key);
-    this.id = id;
+    super(id);
     this.totalPrice = totalPrice;
     this.depositAmount = depositAmount;
     this.itemId = itemId;
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
     this.userId = userId;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public Double getTotalPrice() {
@@ -87,7 +77,6 @@ public class RentalCreatedEvent extends Event {
   @Override
   public String toString() {
     return "RentalCreatedEvent{" +
-        "id=" + id +
         ", totalPrice=" + totalPrice +
         ", depositAmount=" + depositAmount +
         ", itemId=" + itemId +

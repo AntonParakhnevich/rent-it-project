@@ -42,10 +42,3 @@ debezium:
     snapshotMode: ${DEBEZIUM_SNAPSHOT_MODE:initial}
     connectionTimeZone: ${DEBEZIUM_CONNECTION_TIMEZONE:UTC}
     serverTimezone: ${DEBEZIUM_SERVER_TIMEZONE:UTC}
-
-kafka:
-  topics:
-    topics:
-      RENTAL_CREATED: RENTALS_CREATED
-      RENTALS_UPDATED: RENTALS_UPDATED
-      ITEM_CREATED: ITEM_CREATED

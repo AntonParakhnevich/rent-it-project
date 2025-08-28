@@ -2,20 +2,27 @@ package com.rentit.debezium.api;
 
 public abstract class Event {
 
-  private String key;
+  private Long id;
+
+  public Event(Long id) {
+    this.id = id;
+  }
 
   public Event() {
   }
 
-  public Event(String key) {
-    this.key = key;
+  public Long getId() {
+    return id;
   }
 
-  public String getKey() {
-    return key;
+  public void setId(Long id) {
+    this.id = id;
   }
 
-  public void setKey(String key) {
-    this.key = key;
+  @Override
+  public String toString() {
+    return "Event{" +
+        "id=" + id +
+        '}';
   }
 }

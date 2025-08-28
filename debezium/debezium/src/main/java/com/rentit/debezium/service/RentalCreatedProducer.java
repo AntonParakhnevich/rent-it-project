@@ -5,10 +5,20 @@ import com.rentit.debezium.api.RentalCreatedEvent;
 import com.rentit.debezium.model.ChangeRecordEvent;
 import com.rentit.debezium.model.Table;
 import java.time.ZonedDateTime;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RentalCreatedProducerFactory implements Producer {
+public class RentalCreatedProducer implements Producer {
+
+  private final static String TOPIC_NAME = "RENTAL_CREATED";
+
+  private final KafkaProducer<String, Event> kafkaProducer;
+
+  public RentalCreatedProducer(KafkaProducer<String, Event> kafkaProducer) {
+    this.kafkaProducer = kafkaProducer;
+  }
 
   @Override
   public String tableName() {
@@ -16,9 +26,9 @@ public class RentalCreatedProducerFactory implements Producer {
   }
 
   @Override
-  public Event produce(ChangeRecordEvent event) {
+  public void produce(ChangeRecordEvent event) {
     if (!isAvailable(event)) {
-      return null;
+      return;
     }
     RentalCreatedEvent rentalCreatedEvent = new RentalCreatedEvent();
     rentalCreatedEvent.setId(Long.valueOf(event.getAfter().get("id").toString()));
@@ -44,9 +54,8 @@ public class RentalCreatedProducerFactory implements Producer {
     if (event.getAfter().get("user_id") != null) {
       rentalCreatedEvent.setUserId(Long.valueOf(event.getAfter().get("user_id").toString()));
     }
-    rentalCreatedEvent.setKey("RENTAL_CREATED");
 
-    return rentalCreatedEvent;
+    kafkaProducer.send(new ProducerRecord<>(TOPIC_NAME, rentalCreatedEvent.getId().toString(), rentalCreatedEvent));
   }
 
   private boolean isAvailable(ChangeRecordEvent event) {

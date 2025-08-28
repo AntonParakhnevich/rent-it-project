@@ -30,7 +30,7 @@ public class RentalCreatedListener {
     this.services = services;
   }
 
-  @KafkaListener(id = "rentalsCreated", topics = "RENTALS_CREATED")
+  @KafkaListener(id = "rentalsCreated", topics = "RENTAL_CREATED")
   public void listen(String message) {
     try {
       RentalCreatedEvent event = objectMapper.readValue(message, RentalCreatedEvent.class);

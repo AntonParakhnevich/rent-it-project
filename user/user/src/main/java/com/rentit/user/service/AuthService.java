@@ -2,7 +2,8 @@ package com.rentit.user.service;
 
 import com.rentit.user.api.AuthResponse;
 import com.rentit.user.api.LoginRequest;
-import com.rentit.user.api.RegisterRequest;
+import com.rentit.user.api.UserCreateRequest;
+import com.rentit.user.dto.UserDto;
 import com.rentit.user.model.Role;
 import com.rentit.user.model.User;
 import com.rentit.user.repository.UserRepository;
@@ -22,24 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final UserService userService;
 
   @Transactional
-  public AuthResponse register(RegisterRequest request) {
-    if (userRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("Пользователь с таким email уже существует");
-    }
-    User user = new User();
-    user.setEmail(request.getEmail());
-    user.setPassword(passwordEncoder.encode(request.getPassword()));
-    user.setFirstName(request.getFirstName());
-    user.setLastName(request.getLastName());
-    user.setPhoneNumber(request.getPhoneNumber());
-    user.setDescription(request.getDescription());
-    user.setRoles(request.getRoles().stream().map(Role::valueOf).collect(Collectors.toSet()));
-    User saved = userRepository.save(user);
+  public AuthResponse register(UserCreateRequest request) {
+    UserDto saved = userService.createUser(request);
 
     AuthResponse response = new AuthResponse();
     response.setAccessToken(jwtService.generateToken(saved.getEmail(), new HashMap<>()));
@@ -47,7 +37,6 @@ public class AuthService {
     response.setEmail(saved.getEmail());
     response.setFirstName(saved.getFirstName());
     response.setLastName(saved.getLastName());
-    response.setRoles(saved.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
     return response;
   }
 
@@ -64,7 +53,6 @@ public class AuthService {
     response.setEmail(user.getEmail());
     response.setFirstName(user.getFirstName());
     response.setLastName(user.getLastName());
-    response.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
     return response;
   }
 } 
