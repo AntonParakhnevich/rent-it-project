@@ -7,4 +7,5 @@ include 'rental:rental',
     'notification:internal-notification:internal-notification-api',
     'debezium:debezium',
     'debezium:debezium-api',
-    'gateway:private-area:private-area'
+    'gateway:private-area:private-area',
+    'frontend'

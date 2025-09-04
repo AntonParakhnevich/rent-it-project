@@ -12,15 +12,15 @@ public class UserResponse {
   private String phoneNumber;
   private String description;
   private Double rating;
-  private boolean isVerified;
-  private boolean isEnabled;
+  private boolean verified;
+  private boolean enabled;
   private Set<String> roles;
 
   public UserResponse() {
   }
 
   public UserResponse(Long id, String email, String password, String firstName, String lastName, String phoneNumber, String description,
-      Double rating, boolean isVerified, boolean isEnabled, Set<String> roles) {
+      Double rating, boolean verified, boolean enabled, Set<String> roles) {
     this.id = id;
     this.email = email;
     this.password = password;
@@ -29,8 +29,8 @@ public class UserResponse {
     this.phoneNumber = phoneNumber;
     this.description = description;
     this.rating = rating;
-    this.isVerified = isVerified;
-    this.isEnabled = isEnabled;
+    this.verified = verified;
+    this.enabled = enabled;
     this.roles = roles;
   }
 
@@ -91,19 +91,19 @@ public class UserResponse {
   }
 
   public boolean isVerified() {
-    return isVerified;
+    return verified;
   }
 
   public void setVerified(boolean verified) {
-    isVerified = verified;
+    this.verified = verified;
   }
 
   public boolean isEnabled() {
-    return isEnabled;
+    return enabled;
   }
 
   public void setEnabled(boolean enabled) {
-    isEnabled = enabled;
+    this.enabled = enabled;
   }
 
   public String getPassword() {

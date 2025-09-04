@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/debezium" />
             <option value="$PROJECT_DIR$/debezium/debezium" />
             <option value="$PROJECT_DIR$/debezium/debezium-api" />
+            <option value="$PROJECT_DIR$/frontend" />
             <option value="$PROJECT_DIR$/gateway" />
             <option value="$PROJECT_DIR$/gateway/private-area" />
             <option value="$PROJECT_DIR$/gateway/private-area/private-area" />
