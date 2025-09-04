@@ -2,6 +2,9 @@
 **/build/
 build/
 
+**/node_modules/
+node_modules/
+
 # Gradle files
 .gradle/
 **/gradle/wrapper/gradle-wrapper.jar
