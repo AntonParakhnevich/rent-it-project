@@ -2,6 +2,7 @@ package com.rentit.privatearea.controller;
 
 import com.rentit.privatearea.service.rental.RentalService;
 import com.rentit.rental.api.RentalResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +24,14 @@ public class RentalController {
     return rentalService.getById(id);
   }
 
-  @PostMapping("/activate")
-  public ResponseEntity activate(@RequestParam("id") Long id) {
-    rentalService.activate(id);
+  @GetMapping
+  public List<RentalResponse> getAllByUserId(@RequestParam("userId") Long userId) {
+    return rentalService.getAllByUserId(userId);
+  }
+
+  @PostMapping("/confirm")
+  public ResponseEntity<Void> confirm(@RequestParam("id") Long id) {
+    rentalService.confirm(id);
     return ResponseEntity.ok().build();
   }
 }

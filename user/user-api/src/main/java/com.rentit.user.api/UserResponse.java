@@ -6,7 +6,6 @@ public class UserResponse {
 
   private Long id;
   private String email;
-  private String password;
   private String firstName;
   private String lastName;
   private String phoneNumber;
@@ -19,11 +18,10 @@ public class UserResponse {
   public UserResponse() {
   }
 
-  public UserResponse(Long id, String email, String password, String firstName, String lastName, String phoneNumber, String description,
+  public UserResponse(Long id, String email, String firstName, String lastName, String phoneNumber, String description,
       Double rating, boolean verified, boolean enabled, Set<String> roles) {
     this.id = id;
     this.email = email;
-    this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
     this.phoneNumber = phoneNumber;
@@ -104,14 +102,6 @@ public class UserResponse {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 
   public Set<String> getRoles() {

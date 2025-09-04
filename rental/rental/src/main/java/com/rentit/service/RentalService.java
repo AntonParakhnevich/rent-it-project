@@ -1,16 +1,17 @@
 package com.rentit.service;
 
-import com.rentit.rental.api.RentalResponse;
 import com.rentit.dto.RentalDto;
 import com.rentit.model.Item;
 import com.rentit.model.Rental;
 import com.rentit.model.RentalStatus;
+import com.rentit.rental.api.RentalResponse;
 import com.rentit.repository.ItemRepository;
 import com.rentit.repository.RentalRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,6 +56,24 @@ public class RentalService {
     Rental rental = rentalRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Аренда не найдена"));
     return mapToResponse(rental);
+  }
+
+  @Transactional(readOnly = true)
+  public List<RentalResponse> getRentalsByUserId(Long userId) {
+    List<Rental> rentals = rentalRepository.findByUserId(userId);
+    return rentals.stream()
+        .map(this::mapToResponse)
+        .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public void confirm(Long rentalId) {
+    Rental rental = rentalRepository.findById(rentalId)
+        .orElseThrow(() -> new IllegalArgumentException("rental not found, id=" + rentalId));
+    if (rental.getStatus() == RentalStatus.PENDING) {
+      rental.setStatus(RentalStatus.CONFIRMED);
+      rentalRepository.save(rental);
+    }
   }
 
   @Transactional

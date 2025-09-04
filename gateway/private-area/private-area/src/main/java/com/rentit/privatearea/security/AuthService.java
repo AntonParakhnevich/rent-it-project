@@ -1,10 +1,10 @@
-package com.rentit.privatearea.service;
+package com.rentit.privatearea.security;
 
-import com.rentit.privatearea.security.JwtService;
 import com.rentit.user.api.AuthResponse;
 import com.rentit.user.api.LoginRequest;
 import com.rentit.user.api.UserConnector;
 import com.rentit.user.api.UserCreateRequest;
+import com.rentit.user.api.UserLoginResponse;
 import com.rentit.user.api.UserResponse;
 import java.util.HashMap;
 import java.util.Optional;
@@ -41,7 +41,7 @@ public class AuthService {
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
     );
-    UserResponse user = Optional.ofNullable(userConnector.getByEmail(request.getEmail()))
+    UserLoginResponse user = Optional.ofNullable(userConnector.getByEmail(request.getEmail()))
         .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
     AuthResponse response = new AuthResponse();

@@ -7,6 +7,7 @@ import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard/Dashboard';
 import UserProfile from './components/User/UserProfile';
 import RentalDetails from './components/Rental/RentalDetails';
+import MyRentals from './components/Rental/MyRentals';
 import './App.css';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="my-rentals" element={<MyRentals />} />
             <Route path="profile/:userId" element={<UserProfile />} />
             <Route path="rental/:rentalId" element={<RentalDetails />} />
           </Route>

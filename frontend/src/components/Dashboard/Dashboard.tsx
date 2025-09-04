@@ -28,9 +28,9 @@ const Dashboard: React.FC = () => {
           <h3>Мои аренды</h3>
           <p>Управление активными и завершенными арендами</p>
           <div className="card-actions">
-            <button className="btn btn-secondary" onClick={() => alert('Функция в разработке')}>
+            <Link to="/my-rentals" className="btn btn-secondary">
               Просмотреть аренды
-            </button>
+            </Link>
           </div>
         </div>
 

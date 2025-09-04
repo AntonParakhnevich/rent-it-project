@@ -1,10 +1,11 @@
 package com.rentit.controller;
 
-import com.rentit.rental.api.RentalResponse;
 import com.rentit.dto.RentalDto;
 import com.rentit.model.RentalStatus;
+import com.rentit.rental.api.RentalResponse;
 import com.rentit.service.RentalService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,18 +32,18 @@ public class RentalController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<RentalResponse> getRental(@PathVariable Long id) {
+  public ResponseEntity<RentalResponse> getRental(@PathVariable("id") Long id) {
     return ResponseEntity.ok(rentalService.getRentalById(id));
   }
 
-  @PutMapping("/{id}/status")
-  public ResponseEntity<RentalDto> updateRentalStatus(@PathVariable Long id, @RequestParam RentalStatus status) {
-    return ResponseEntity.ok(rentalService.updateRentalStatus(id, status));
+  @GetMapping
+  public List<RentalResponse> getRentalsByUserId(@RequestParam("userId") Long userId) {
+    return rentalService.getRentalsByUserId(userId);
   }
 
-  @PutMapping("/confirm/{id}")
-  public ResponseEntity<RentalDto> activate(@PathVariable Long id) {
-    return ResponseEntity.ok(rentalService.updateRentalStatus(id, RentalStatus.CONFIRMED));
+  @PostMapping("/confirm")
+  public void updateRentalStatus(@RequestParam("id") Long id) {
+    rentalService.confirm(id);
   }
 
   @PutMapping("/complete/{id}")

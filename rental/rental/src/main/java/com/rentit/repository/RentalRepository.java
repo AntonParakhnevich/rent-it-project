@@ -15,6 +15,8 @@ import java.util.List;
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     Page<Rental> findByUserId(Long userId, Pageable pageable);
     Page<Rental> findByItemUserId(Long userId, Pageable pageable);
+
+    List<Rental> findByUserId(Long userId);
     
     @Query("SELECT r FROM Rental r WHERE r.item.id = :itemId AND r.status = :status")
     List<Rental> findByItemIdAndStatus(Long itemId, RentalStatus status);

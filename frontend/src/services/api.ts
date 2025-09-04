@@ -67,8 +67,13 @@ export const rentalApi = {
     return response.data;
   },
 
-  activate: async (id: number): Promise<void> => {
-    await apiClient.post(`/rentals/activate?id=${id}`);
+  getAllByUserId: async (userId: number): Promise<RentalResponse[]> => {
+    const response = await apiClient.get<RentalResponse[]>(`/rentals?userId=${userId}`);
+    return response.data;
+  },
+
+  confirm: async (id: number): Promise<void> => {
+    await apiClient.post(`/rentals/confirm?id=${id}`);
   },
 };
 

@@ -12,7 +12,7 @@ public interface UserConnector {
   UserResponse getUserById(@PathVariable("id") Long id);
 
   @GetMapping("/users?email={email}")
-  UserResponse getByEmail(@PathVariable("email") String email);
+  UserLoginResponse getByEmail(@PathVariable("email") String email);
 
   @PostMapping("/users")
   UserResponse create(UserCreateRequest request);

@@ -49,9 +49,14 @@
   color: #856404;
 }
 
-.status-active {
+.status-confirmed {
   background: #d4edda;
   color: #155724;
+}
+
+.status-in-progress {
+  background: #d4edda;
+  color: #9bf816;
 }
 
 .status-completed {

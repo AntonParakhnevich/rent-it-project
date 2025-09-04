@@ -1,6 +1,7 @@
 package com.rentit.privatearea.security;
 
 import com.rentit.user.api.UserConnector;
+import com.rentit.user.api.UserLoginResponse;
 import com.rentit.user.api.UserResponse;
 import java.util.Optional;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    UserResponse user = Optional.ofNullable(userConnector.getByEmail(email))
+    UserLoginResponse user = Optional.ofNullable(userConnector.getByEmail(email))
         .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
     Set<GrantedAuthority> authorities = user.getRoles().stream()
@@ -36,7 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         .accountExpired(false)
         .accountLocked(false)
         .credentialsExpired(false)
-        .disabled(!user.isEnabled())
         .build();
   }
 

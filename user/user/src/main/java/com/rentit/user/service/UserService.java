@@ -1,6 +1,7 @@
 package com.rentit.user.service;
 
 import com.rentit.user.api.UserCreateRequest;
+import com.rentit.user.api.UserLoginResponse;
 import com.rentit.user.api.UserResponse;
 import com.rentit.user.dto.UserDto;
 import com.rentit.user.model.Role;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final UserRatingService userRatingService;
 
   @Transactional
   public UserResponse createUser(UserCreateRequest request) {
@@ -31,21 +33,30 @@ public class UserService {
     user.setDescription(request.getDescription());
     user.setRoles(request.getRoles().stream().map(Role::valueOf).collect(Collectors.toSet()));
     User savedUser = userRepository.save(user);
-    return convertToDto(savedUser);
+    return convertToUserResponse(savedUser);
   }
 
   @Transactional(readOnly = true)
   public UserResponse getUserById(Long id) {
     User user = userRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-    return convertToDto(user);
+        .orElseThrow(() -> new RuntimeException("Пользователь не найден, id=" + id));
+    UserResponse userResponse = convertToUserResponse(user);
+    userResponse.setRating(userRatingService.getAverageByUserId(id));
+    return userResponse;
   }
 
   @Transactional(readOnly = true)
-  public UserResponse getByEmail(String email) {
+  public UserLoginResponse getByEmail(String email) {
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-    return convertToDto(user);
+        .orElseThrow(() -> new RuntimeException("Пользователь не найден, email=" + email));
+    UserLoginResponse userLoginResponse = new UserLoginResponse();
+    userLoginResponse.setId(user.getId());
+    userLoginResponse.setEmail(user.getEmail());
+    userLoginResponse.setFirstName(user.getFirstName());
+    userLoginResponse.setLastName(user.getLastName());
+    userLoginResponse.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
+    userLoginResponse.setPassword(user.getPassword());
+    return userLoginResponse;
   }
 
   @Transactional
@@ -57,7 +68,7 @@ public class UserService {
     user.setPhoneNumber(userDto.getPhoneNumber());
     user.setDescription(userDto.getDescription());
     User updated = userRepository.save(user);
-    return convertToDto(updated);
+    return convertToUserResponse(updated);
   }
 
   @Transactional
@@ -68,7 +79,7 @@ public class UserService {
     userRepository.deleteById(id);
   }
 
-  private UserResponse convertToDto(User user) {
+  private UserResponse convertToUserResponse(User user) {
     UserResponse dto = new UserResponse();
     dto.setId(user.getId());
     dto.setEmail(user.getEmail());
@@ -77,7 +88,6 @@ public class UserService {
     dto.setPhoneNumber(user.getPhoneNumber());
     dto.setDescription(user.getDescription());
     dto.setVerified(user.isVerified());
-    dto.setPassword(user.getPassword());
     dto.setEnabled(user.isEnabled());
     dto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
     return dto;

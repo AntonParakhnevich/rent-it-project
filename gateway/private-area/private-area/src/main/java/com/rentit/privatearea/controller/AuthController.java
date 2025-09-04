@@ -1,6 +1,6 @@
 package com.rentit.privatearea.controller;
 
-import com.rentit.privatearea.service.AuthService;
+import com.rentit.privatearea.security.AuthService;
 import com.rentit.user.api.AuthResponse;
 import com.rentit.user.api.LoginRequest;
 import com.rentit.user.api.UserCreateRequest;
@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody UserCreateRequest request) {
-        return ResponseEntity.ok(authService.register(request));
-    }
+  @PostMapping("/register")
+  public ResponseEntity<AuthResponse> register(@Valid @RequestBody UserCreateRequest request) {
+    return ResponseEntity.ok(authService.register(request));
+  }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
-    }
+  @PostMapping("/login")
+  public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    return ResponseEntity.ok(authService.login(request));
+  }
 } 

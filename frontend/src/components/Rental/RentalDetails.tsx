@@ -9,7 +9,7 @@ const RentalDetails: React.FC = () => {
   const [rental, setRental] = useState<RentalResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activating, setActivating] = useState(false);
+  const [confirm, setConfirm] = useState(false);
 
   useEffect(() => {
     const fetchRental = async () => {
@@ -33,24 +33,24 @@ const RentalDetails: React.FC = () => {
     fetchRental();
   }, [rentalId]);
 
-  const handleActivate = async () => {
+  const handleConfirm = async () => {
     if (!rental) return;
 
     try {
-      setActivating(true);
-      await rentalApi.activate(rental.id);
-      
+      await rentalApi.confirm(rental.id);
+      setConfirm(true);
+
       // Обновляем статус локально
       setRental({
         ...rental,
-        status: 'ACTIVE'
+        status: 'CONFIRMED'
       });
       
-      alert('Аренда успешно активирована!');
+      alert('Аренда успешно подтверждена!');
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Ошибка активации аренды');
+      alert(error.response?.data?.message || 'Ошибка подтверждения аренды');
     } finally {
-      setActivating(false);
+      setConfirm(false);
     }
   };
 
@@ -75,7 +75,8 @@ const RentalDetails: React.FC = () => {
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       'PENDING': { label: 'Ожидает', className: 'status-pending' },
-      'ACTIVE': { label: 'Активна', className: 'status-active' },
+      'CONFIRMED': { label: 'Подтверждена', className: 'status-confirmed' },
+      'IN_PROGRESS': { label: 'В процессе', className: 'status-int-progress' },
       'COMPLETED': { label: 'Завершена', className: 'status-completed' },
       'CANCELLED': { label: 'Отменена', className: 'status-cancelled' },
     };
@@ -132,11 +133,11 @@ const RentalDetails: React.FC = () => {
         <div className="rental-actions">
           {rental.status === 'PENDING' && (
             <button
-              onClick={handleActivate}
-              disabled={activating}
+              onClick={handleConfirm}
+              disabled={confirm}
               className="btn btn-primary"
             >
-              {activating ? (
+              {confirm ? (
                 <div className="spinner small"></div>
               ) : (
                 'Активировать аренду'
@@ -253,7 +254,7 @@ const RentalDetails: React.FC = () => {
               Связаться с арендатором
             </button>
             
-            {rental.status === 'ACTIVE' && (
+            {rental.status === 'CONFIRM' && (
               <button 
                 className="action-btn danger"
                 onClick={() => alert('Функция в разработке')}
