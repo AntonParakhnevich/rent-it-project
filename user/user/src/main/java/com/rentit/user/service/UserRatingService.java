@@ -17,8 +17,12 @@ public class UserRatingService {
   public void create(UserRatingCreateRequest request) {
     UserRating userRating = new UserRating();
     userRating.setRating(request.getRating());
-    userRating.setRatedId(request.getRatedId());
-    userRating.setRaterId(request.getRaterId());
+    userRating.setUserId(request.getUserId());
+    userRating.setReviewerId(request.getReviewerId());
     userRatingRepository.save(userRating);
+  }
+
+  public Double getAverageByUserId(Long userId) {
+    return userRatingRepository.getAverageByUserId(userId);
   }
 }

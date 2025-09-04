@@ -2,30 +2,30 @@ package com.rentit.user.api;
 
 public class UserRatingCreateRequest {
 
-  private Long raterId;
-  private Long ratedId;
+  private Long userId;
+  private Long reviewerId;
   private Integer rating;
 
-  public UserRatingCreateRequest(Long raterId, Long ratedId, Integer rating) {
-    this.raterId = raterId;
-    this.ratedId = ratedId;
+  public UserRatingCreateRequest(Long userId, Long reviewerId, Integer rating) {
+    this.userId = userId;
+    this.reviewerId = reviewerId;
     this.rating = rating;
   }
 
-  public Long getRaterId() {
-    return raterId;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setRaterId(Long raterId) {
-    this.raterId = raterId;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
-  public Long getRatedId() {
-    return ratedId;
+  public Long getReviewerId() {
+    return reviewerId;
   }
 
-  public void setRatedId(Long ratedId) {
-    this.ratedId = ratedId;
+  public void setReviewerId(Long reviewerId) {
+    this.reviewerId = reviewerId;
   }
 
   public Integer getRating() {

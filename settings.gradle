@@ -1,8 +1,10 @@
 rootProject.name = 'rent-it-project'
-include 'rent-it',
+include 'rental:rental',
+    'rental:rental-api',
     'user:user',
     'user:user-api',
     'notification:internal-notification:internal-notification',
     'notification:internal-notification:internal-notification-api',
     'debezium:debezium',
-    'debezium:debezium-api'
+    'debezium:debezium-api',
+    'gateway:private-area:private-area'

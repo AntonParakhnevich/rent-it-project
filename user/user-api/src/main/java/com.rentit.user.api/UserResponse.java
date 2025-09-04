@@ -1,29 +1,37 @@
 package com.rentit.user.api;
 
+import java.util.Set;
+
 public class UserResponse {
 
   private Long id;
   private String email;
+  private String password;
   private String firstName;
   private String lastName;
   private String phoneNumber;
   private String description;
   private Double rating;
   private boolean isVerified;
+  private boolean isEnabled;
+  private Set<String> roles;
 
   public UserResponse() {
   }
 
-  public UserResponse(Long id, String email, String firstName, String lastName, String phoneNumber, String description,
-      Double rating, boolean isVerified) {
+  public UserResponse(Long id, String email, String password, String firstName, String lastName, String phoneNumber, String description,
+      Double rating, boolean isVerified, boolean isEnabled, Set<String> roles) {
     this.id = id;
     this.email = email;
+    this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
     this.phoneNumber = phoneNumber;
     this.description = description;
     this.rating = rating;
     this.isVerified = isVerified;
+    this.isEnabled = isEnabled;
+    this.roles = roles;
   }
 
   public Long getId() {
@@ -88,5 +96,29 @@ public class UserResponse {
 
   public void setVerified(boolean verified) {
     isVerified = verified;
+  }
+
+  public boolean isEnabled() {
+    return isEnabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    isEnabled = enabled;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Set<String> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<String> roles) {
+    this.roles = roles;
   }
 }

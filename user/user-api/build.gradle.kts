@@ -21,3 +21,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
 }
+
+dependencyManagement {
+  imports {
+    mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
+  }
+}

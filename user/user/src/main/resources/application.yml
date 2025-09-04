@@ -16,13 +16,6 @@ spring:
   cloud:
     compatibility-verifier.enabled: false
 
-server:
-  port: 8081
-
-jwt:
-  secret: ${JWT_SECRET:your-very-long-and-secure-secret}
-  expiration: 86400000
-
 logging:
   level:
     org.springframework.security: INFO

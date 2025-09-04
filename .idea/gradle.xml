@@ -11,11 +11,16 @@
             <option value="$PROJECT_DIR$/debezium" />
             <option value="$PROJECT_DIR$/debezium/debezium" />
             <option value="$PROJECT_DIR$/debezium/debezium-api" />
+            <option value="$PROJECT_DIR$/gateway" />
+            <option value="$PROJECT_DIR$/gateway/private-area" />
+            <option value="$PROJECT_DIR$/gateway/private-area/private-area" />
             <option value="$PROJECT_DIR$/notification" />
             <option value="$PROJECT_DIR$/notification/internal-notification" />
             <option value="$PROJECT_DIR$/notification/internal-notification/internal-notification" />
             <option value="$PROJECT_DIR$/notification/internal-notification/internal-notification-api" />
-            <option value="$PROJECT_DIR$/rent-it" />
+            <option value="$PROJECT_DIR$/rental" />
+            <option value="$PROJECT_DIR$/rental/rental" />
+            <option value="$PROJECT_DIR$/rental/rental-api" />
             <option value="$PROJECT_DIR$/user" />
             <option value="$PROJECT_DIR$/user/user" />
             <option value="$PROJECT_DIR$/user/user-api" />

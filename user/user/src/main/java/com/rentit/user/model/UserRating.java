@@ -22,11 +22,11 @@ public class UserRating {
   @Column
   private Integer rating;
 
-  @Column(name = "rater_id")
-  private Long raterId;
+  @Column(name = "reviewer_id")
+  private Long reviewerId;
 
-  @Column(name = "rated_id")
-  private Long ratedId;
+  @Column(name = "user_id")
+  private Long userId;
 
   @Column(name = "date")
   private LocalDateTime date;
@@ -41,13 +41,13 @@ public class UserRating {
     }
     UserRating that = (UserRating) o;
     return Objects.equals(id, that.id) && Objects.equals(rating, that.rating)
-        && Objects.equals(raterId, that.raterId) && Objects.equals(ratedId, that.ratedId)
+        && Objects.equals(reviewerId, that.reviewerId) && Objects.equals(userId, that.userId)
         && Objects.equals(date, that.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, rating, raterId, ratedId, date);
+    return Objects.hash(id, rating, reviewerId, userId, date);
   }
 
   @Override
@@ -55,8 +55,8 @@ public class UserRating {
     return "UserRating{" +
         "id=" + id +
         ", rating=" + rating +
-        ", raterId=" + raterId +
-        ", ratedId=" + ratedId +
+        ", reviewerId=" + reviewerId +
+        ", userId=" + userId +
         ", date=" + date +
         '}';
   }
