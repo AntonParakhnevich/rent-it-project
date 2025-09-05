@@ -21,10 +21,6 @@ repositories {
   mavenCentral()
 }
 
-//ext {
-//  set('springCloudVersion', "2023.0.0")
-//}
-
 dependencies {
   implementation(project(mapOf("path" to ":user:user-api")))
   implementation(project(mapOf("path" to ":rental:rental-api")))
@@ -35,6 +31,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-websocket")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-validation")
+  implementation("org.springframework.data:spring-data-commons")
 
 
   implementation("io.jsonwebtoken:jjwt-api:0.11.5")

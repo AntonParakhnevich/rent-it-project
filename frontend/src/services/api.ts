@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LoginRequest, UserCreateRequest, AuthResponse, UserResponse, RentalResponse } from '../types';
+import { LoginRequest, UserCreateRequest, AuthResponse, UserResponse, RentalResponse, ItemRequest, ItemResponse, PageResponse } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8078';
 
@@ -74,6 +74,19 @@ export const rentalApi = {
 
   confirm: async (id: number): Promise<void> => {
     await apiClient.post(`/rentals/confirm?id=${id}`);
+  },
+};
+
+// API методы для предметов
+export const itemApi = {
+  create: async (itemData: ItemRequest): Promise<ItemResponse> => {
+    const response = await apiClient.post<ItemResponse>('/items', itemData);
+    return response.data;
+  },
+
+  getByOwnerId: async (ownerId: number, page: number = 0, size: number = 10): Promise<PageResponse<ItemResponse>> => {
+    const response = await apiClient.get<PageResponse<ItemResponse>>(`/items?ownerId=${ownerId}&page=${page}&size=${size}`);
+    return response.data;
   },
 };
 

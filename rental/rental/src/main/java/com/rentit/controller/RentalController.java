@@ -1,7 +1,7 @@
 package com.rentit.controller;
 
-import com.rentit.dto.RentalDto;
 import com.rentit.model.RentalStatus;
+import com.rentit.rental.api.RentalRequest;
 import com.rentit.rental.api.RentalResponse;
 import com.rentit.service.RentalService;
 import jakarta.validation.Valid;
@@ -27,8 +27,8 @@ public class RentalController {
   private final RentalService rentalService;
 
   @PostMapping
-  public ResponseEntity<RentalDto> createRental(@Valid @RequestBody RentalDto rentalDto) {
-    return ResponseEntity.ok(rentalService.createRental(rentalDto));
+  public ResponseEntity<RentalResponse> createRental(@Valid @RequestBody RentalRequest request) {
+    return ResponseEntity.ok(rentalService.createRental(request));
   }
 
   @GetMapping("/{id}")
@@ -47,17 +47,17 @@ public class RentalController {
   }
 
   @PutMapping("/complete/{id}")
-  public ResponseEntity<RentalDto> complete(@PathVariable Long id) {
+  public ResponseEntity<RentalResponse> complete(@PathVariable Long id) {
     return ResponseEntity.ok(rentalService.updateRentalStatus(id, RentalStatus.COMPLETED));
   }
 
   @GetMapping("/renter/{renterId}")
-  public ResponseEntity<Page<RentalDto>> getRentalsByRenter(@PathVariable Long renterId, Pageable pageable) {
+  public ResponseEntity<Page<RentalResponse>> getRentalsByRenter(@PathVariable Long renterId, Pageable pageable) {
     return ResponseEntity.ok(rentalService.getRentalsByRenter(renterId, pageable));
   }
 
   @GetMapping("/owner/{ownerId}")
-  public ResponseEntity<Page<RentalDto>> getRentalsByOwner(@PathVariable Long ownerId, Pageable pageable) {
+  public ResponseEntity<Page<RentalResponse>> getRentalsByOwner(@PathVariable Long ownerId, Pageable pageable) {
     return ResponseEntity.ok(rentalService.getRentalsByOwner(ownerId, pageable));
   }
 } 

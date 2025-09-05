@@ -26,6 +26,9 @@ const Header: React.FC = () => {
             <Link to="/my-rentals" className="nav-link">
               Мои аренды
             </Link>
+            <Link to="/my-items" className="nav-link">
+              Мои предметы
+            </Link>
             {user && (
               <Link to={`/profile/${user.userId}`} className="nav-link">
                 Профиль

@@ -76,7 +76,7 @@ const RentalDetails: React.FC = () => {
     const statusConfig = {
       'PENDING': { label: 'Ожидает', className: 'status-pending' },
       'CONFIRMED': { label: 'Подтверждена', className: 'status-confirmed' },
-      'IN_PROGRESS': { label: 'В процессе', className: 'status-int-progress' },
+      'IN_PROGRESS': { label: 'В процессе', className: 'status-in-progress' },
       'COMPLETED': { label: 'Завершена', className: 'status-completed' },
       'CANCELLED': { label: 'Отменена', className: 'status-cancelled' },
     };
@@ -140,7 +140,7 @@ const RentalDetails: React.FC = () => {
               {confirm ? (
                 <div className="spinner small"></div>
               ) : (
-                'Активировать аренду'
+                'Подтвердить аренду'
               )}
             </button>
           )}
@@ -254,7 +254,7 @@ const RentalDetails: React.FC = () => {
               Связаться с арендатором
             </button>
             
-            {rental.status === 'CONFIRM' && (
+            {rental.status === 'CONFIRMED' && (
               <button 
                 className="action-btn danger"
                 onClick={() => alert('Функция в разработке')}

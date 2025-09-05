@@ -47,6 +47,43 @@ export interface RentalResponse {
   status: string;
 }
 
+// Типы для предметов
+export interface ItemRequest {
+  title: string;
+  description: string;
+  pricePerDay: number;
+  depositAmount: number;
+  category: string;
+  images: string[];
+  available: boolean;
+  location: string;
+  ownerId: number;
+}
+
+export interface ItemResponse {
+  id: number;
+  title: string;
+  description: string;
+  pricePerDay: number;
+  depositAmount: number;
+  category: string;
+  images: string[];
+  available: boolean;
+  location: string;
+  ownerId: number;
+}
+
+// Типы для пагинации
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+}
+
 // Контекст аутентификации
 export interface AuthContextType {
   user: AuthResponse | null;

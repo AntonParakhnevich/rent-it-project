@@ -37,9 +37,11 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/auth/**").permitAll()
-            .requestMatchers(HttpMethod.POST,"/rentals/activate").hasRole("LANDLORD")
-            .requestMatchers(HttpMethod.GET, "/rentals/**").hasAnyRole("LANDLORD", "RENTER", "ADMIN")
-            .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("LANDLORD", "RENTER", "ADMIN")
+            .requestMatchers(HttpMethod.POST,"/rentals/confirm/**").hasRole("LANDLORD")
+            .requestMatchers(HttpMethod.GET,
+                "/rentals/**",
+                "/users/**"
+            ).hasAnyRole("LANDLORD", "RENTER", "ADMIN")
             .anyRequest().authenticated()
         )
         .sessionManagement(session -> session

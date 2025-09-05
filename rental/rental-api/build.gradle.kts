@@ -19,6 +19,8 @@ repositories {
 dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
   implementation("org.springframework.boot:spring-boot-starter-validation")
+  implementation("org.springframework.data:spring-data-commons")
+
 
 }
 

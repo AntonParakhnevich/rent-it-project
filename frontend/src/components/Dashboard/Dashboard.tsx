@@ -35,6 +35,20 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="dashboard-card">
+          <div className="card-icon">📦</div>
+          <h3>Мои предметы</h3>
+          <p>Управление предметами для аренды</p>
+          <div className="card-actions">
+            <Link to="/my-items" className="btn btn-secondary">
+              Мои предметы
+            </Link>
+            <Link to="/items/create" className="btn btn-primary">
+              Добавить предмет
+            </Link>
+          </div>
+        </div>
+
+        <div className="dashboard-card">
           <div className="card-icon">📊</div>
           <h3>Статистика</h3>
           <p>Анализ доходов и активности аренды</p>
@@ -63,14 +77,18 @@ const Dashboard: React.FC = () => {
       <div className="quick-actions">
         <h2>Быстрые действия</h2>
         <div className="actions-grid">
-          <button className="action-btn" onClick={() => alert('Функция в разработке')}>
+          <Link to="/items/create" className="action-btn">
             <span className="action-icon">➕</span>
             Добавить новый предмет для аренды
-          </button>
-          <button className="action-btn" onClick={() => alert('Функция в разработке')}>
-            <span className="action-icon">🔍</span>
-            Найти предметы для аренды
-          </button>
+          </Link>
+          <Link to="/my-items" className="action-btn">
+            <span className="action-icon">📦</span>
+            Управление моими предметами
+          </Link>
+          <Link to="/my-rentals" className="action-btn">
+            <span className="action-icon">🏠</span>
+            Просмотреть мои аренды
+          </Link>
           <button className="action-btn" onClick={() => alert('Функция в разработке')}>
             <span className="action-icon">💬</span>
             Сообщения
