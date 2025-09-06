@@ -37,8 +37,8 @@ public class RentalController {
   }
 
   @GetMapping
-  public List<RentalResponse> getRentalsByUserId(@RequestParam("userId") Long userId) {
-    return rentalService.getRentalsByUserId(userId);
+  public Page<RentalResponse> getRentalsByUserId(@RequestParam("userId") Long userId, Pageable pageable) {
+    return rentalService.getRentalsByUserId(userId, pageable);
   }
 
   @PostMapping("/confirm")

@@ -1,43 +1,42 @@
 package com.rentit.user.api;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
 
-public class UserResponse {
+public class UserCreateRequest {
 
-  private Long id;
+  @NotBlank
+  @Email
   private String email;
+  @NotBlank
+  @Size(min = 6, max = 100)
+  private String password;
+  @NotBlank
   private String firstName;
+  @NotBlank
   private String lastName;
   private String phoneNumber;
   private String description;
-  private Double rating;
-  private boolean verified;
-  private boolean enabled;
+  private String unp; // УНП для арендодателей
+  @NotEmpty
   private Set<String> roles;
 
-  public UserResponse() {
+  public UserCreateRequest() {
   }
 
-  public UserResponse(Long id, String email, String firstName, String lastName, String phoneNumber, String description,
-      Double rating, boolean verified, boolean enabled, Set<String> roles) {
-    this.id = id;
+  public UserCreateRequest(String email, String password, String firstName, String lastName, String phoneNumber,
+      String description, String unp, Set<String> roles) {
     this.email = email;
+    this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
     this.phoneNumber = phoneNumber;
     this.description = description;
-    this.rating = rating;
-    this.verified = verified;
-    this.enabled = enabled;
+    this.unp = unp;
     this.roles = roles;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public String getEmail() {
@@ -46,6 +45,14 @@ public class UserResponse {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public String getFirstName() {
@@ -80,28 +87,12 @@ public class UserResponse {
     this.description = description;
   }
 
-  public Double getRating() {
-    return rating;
+  public String getUnp() {
+    return unp;
   }
 
-  public void setRating(Double rating) {
-    this.rating = rating;
-  }
-
-  public boolean isVerified() {
-    return verified;
-  }
-
-  public void setVerified(boolean verified) {
-    this.verified = verified;
-  }
-
-  public boolean isEnabled() {
-    return enabled;
-  }
-
-  public void setEnabled(boolean enabled) {
-    this.enabled = enabled;
+  public void setUnp(String unp) {
+    this.unp = unp;
   }
 
   public Set<String> getRoles() {

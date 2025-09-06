@@ -37,7 +37,9 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/auth/**").permitAll()
-            .requestMatchers(HttpMethod.POST,"/rentals/confirm/**").hasRole("LANDLORD")
+            .requestMatchers(HttpMethod.POST,
+                "/rentals/confirm",
+                "/items").hasRole("LANDLORD")
             .requestMatchers(HttpMethod.GET,
                 "/rentals/**",
                 "/users/**"

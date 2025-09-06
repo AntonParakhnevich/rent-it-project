@@ -60,6 +60,12 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { usePermissions } from '../../hooks/usePermissions';
 import { RentalResponse } from '../../types';
 import { rentalApi } from '../../services/api';
 import './RentalDetails.css';
 
 const RentalDetails: React.FC = () => {
   const { rentalId } = useParams<{ rentalId: string }>();
+  const { user } = useAuth();
+  const { canConfirmRentals } = usePermissions();
   const [rental, setRental] = useState<RentalResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,11 +38,14 @@ const RentalDetails: React.FC = () => {
   }, [rentalId]);
 
   const handleConfirm = async () => {
-    if (!rental) return;
+    if (!rental || !canConfirmRentals()) {
+      alert('У вас нет прав для подтверждения аренды');
+      return;
+    }
 
     try {
-      await rentalApi.confirm(rental.id);
       setConfirm(true);
+      await rentalApi.confirm(rental.id);
 
       // Обновляем статус локально
       setRental({
@@ -131,18 +138,31 @@ const RentalDetails: React.FC = () => {
         </div>
         
         <div className="rental-actions">
-          {rental.status === 'PENDING' && (
+          {rental.status === 'PENDING' && canConfirmRentals() && (
             <button
               onClick={handleConfirm}
               disabled={confirm}
               className="btn btn-primary"
             >
               {confirm ? (
-                <div className="spinner small"></div>
+                <>
+                  <div className="spinner small"></div>
+                  Подтверждаю...
+                </>
               ) : (
-                'Подтвердить аренду'
+                <>
+                  <span>✓</span>
+                  Подтвердить аренду
+                </>
               )}
             </button>
+          )}
+          
+          {rental.status === 'PENDING' && !canConfirmRentals() && (
+            <div className="status-info">
+              <span className="info-icon">ℹ️</span>
+              Аренда ожидает подтверждения арендодателя
+            </div>
           )}
         </div>
       </div>
@@ -230,13 +250,15 @@ const RentalDetails: React.FC = () => {
         <div className="rental-section">
           <h2>Действия</h2>
           <div className="actions-grid">
-            <button 
-              className="action-btn"
-              onClick={() => alert('Функция в разработке')}
-            >
-              <span className="action-icon">👤</span>
-              Просмотреть арендатора
-            </button>
+            {canConfirmRentals() && (
+              <button 
+                className="action-btn"
+                onClick={() => alert('Функция в разработке')}
+              >
+                <span className="action-icon">👤</span>
+                Просмотреть арендатора
+              </button>
+            )}
             
             <button 
               className="action-btn"
@@ -251,10 +273,10 @@ const RentalDetails: React.FC = () => {
               onClick={() => alert('Функция в разработке')}
             >
               <span className="action-icon">💬</span>
-              Связаться с арендатором
+              {canConfirmRentals() ? 'Связаться с арендатором' : 'Связаться с арендодателем'}
             </button>
             
-            {rental.status === 'CONFIRMED' && (
+            {rental.status === 'CONFIRMED' && canConfirmRentals() && (
               <button 
                 className="action-btn danger"
                 onClick={() => alert('Функция в разработке')}

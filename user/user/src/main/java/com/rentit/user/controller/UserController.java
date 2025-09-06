@@ -26,31 +26,27 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping
-  public ResponseEntity<UserResponse> createUser(
-      @Valid @RequestBody UserCreateRequest request) {
-    return ResponseEntity.ok(userService.createUser(request));
+  public UserResponse createUser(@Valid @RequestBody UserCreateRequest request) {
+    return userService.createUser(request);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
-    return ResponseEntity.ok(userService.getUserById(id));
+  public UserResponse getUser(@PathVariable Long id) {
+    return userService.getUserById(id);
   }
 
   @GetMapping()
-  public ResponseEntity<UserLoginResponse> getByEmail(@RequestParam("email") String email) {
-    return ResponseEntity.ok(userService.getByEmail(email));
+  public UserLoginResponse getByEmail(@RequestParam("email") String email) {
+    return userService.getByEmail(email);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<UserResponse> updateUser(
-      @PathVariable Long id,
-      @Valid @RequestBody UserDto userDto) {
-    return ResponseEntity.ok(userService.updateUser(id, userDto));
+  public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
+    return userService.updateUser(id, userDto);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+  public void deleteUser(@PathVariable Long id) {
     userService.deleteUser(id);
-    return ResponseEntity.ok().build();
   }
 } 

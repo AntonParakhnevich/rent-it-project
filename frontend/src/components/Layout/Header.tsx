@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { ProtectedComponent, LandlordOnly } from '../Auth/ProtectedComponent';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -23,12 +24,16 @@ const Header: React.FC = () => {
             <Link to="/dashboard" className="nav-link">
               Дашборд
             </Link>
-            <Link to="/my-rentals" className="nav-link">
-              Мои аренды
-            </Link>
-            <Link to="/my-items" className="nav-link">
-              Мои предметы
-            </Link>
+            <ProtectedComponent requiredRoles={['LANDLORD', 'RENTER', 'ADMIN']}>
+              <Link to="/my-rentals" className="nav-link">
+                Мои аренды
+              </Link>
+            </ProtectedComponent>
+            <LandlordOnly>
+              <Link to="/my-items" className="nav-link">
+                Мои предметы
+              </Link>
+            </LandlordOnly>
             {user && (
               <Link to={`/profile/${user.userId}`} className="nav-link">
                 Профиль

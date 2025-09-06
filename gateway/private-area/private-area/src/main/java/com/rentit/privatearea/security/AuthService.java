@@ -34,6 +34,7 @@ public class AuthService {
     response.setEmail(saved.getEmail());
     response.setFirstName(saved.getFirstName());
     response.setLastName(saved.getLastName());
+    response.setRoles(saved.getRoles());
     return response;
   }
 
@@ -50,6 +51,7 @@ public class AuthService {
     response.setEmail(user.getEmail());
     response.setFirstName(user.getFirstName());
     response.setLastName(user.getLastName());
+    response.setRoles(user.getRoles());
     return response;
   }
 } 

@@ -72,6 +72,18 @@ export const rentalApi = {
     return response.data;
   },
 
+  // Получить аренды где пользователь - арендатор
+  getRentalsByRenter: async (renterId: number, page = 0, size = 20): Promise<PageResponse<RentalResponse>> => {
+    const response = await apiClient.get<PageResponse<RentalResponse>>(`/rentals/renter/${renterId}?page=${page}&size=${size}`);
+    return response.data;
+  },
+
+  // Получить аренды где пользователь - владелец предметов (арендодатель)
+  getRentalsByOwner: async (ownerId: number, page = 0, size = 20): Promise<PageResponse<RentalResponse>> => {
+    const response = await apiClient.get<PageResponse<RentalResponse>>(`/rentals/owner/${ownerId}?page=${page}&size=${size}`);
+    return response.data;
+  },
+
   confirm: async (id: number): Promise<void> => {
     await apiClient.post(`/rentals/confirm?id=${id}`);
   },

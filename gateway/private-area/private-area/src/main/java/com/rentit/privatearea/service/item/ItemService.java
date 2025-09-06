@@ -15,11 +15,11 @@ public class ItemService {
 
   private final ItemConnector itemConnector;
 
-  public ResponseEntity<ItemResponse> create(ItemRequest request) {
+  public ItemResponse create(ItemRequest request) {
     return itemConnector.create(request);
   }
 
-  public ResponseEntity<Page<ItemResponse>> getByOwnerId(Long ownerId, Pageable pageable){
+  public Page<ItemResponse> getByOwnerId(Long ownerId, Pageable pageable){
     return itemConnector.getByOwnerId(ownerId, pageable);
   }
 }

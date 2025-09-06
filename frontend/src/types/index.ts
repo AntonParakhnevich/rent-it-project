@@ -11,6 +11,7 @@ export interface UserCreateRequest {
   lastName: string;
   phoneNumber?: string;
   description?: string;
+  unp?: string; // УНП для арендодателей
   roles: string[];
 }
 
@@ -20,6 +21,7 @@ export interface AuthResponse {
   email: string;
   firstName: string;
   lastName: string;
+  roles: string[];
 }
 
 export interface UserResponse {
@@ -29,6 +31,7 @@ export interface UserResponse {
   lastName: string;
   phoneNumber?: string;
   description?: string;
+  unp?: string; // УНП для арендодателей
   rating?: number;
   verified: boolean;
   enabled: boolean;

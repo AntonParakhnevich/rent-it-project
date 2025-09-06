@@ -11,5 +11,6 @@ public enum ItemCategory {
     GARDENING_TOOLS,
     FURNITURE,
     CLOTHING,
+    BOOKS,
     OTHER
 } 

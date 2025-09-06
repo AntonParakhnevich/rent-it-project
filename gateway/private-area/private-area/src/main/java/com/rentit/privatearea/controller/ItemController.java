@@ -23,12 +23,12 @@ public class ItemController {
   private final ItemService itemService;
 
   @PostMapping
-  public ResponseEntity<ItemResponse> create(@RequestBody ItemRequest request) {
+  public ItemResponse create(@RequestBody ItemRequest request) {
     return itemService.create(request);
   }
 
   @GetMapping
-  public ResponseEntity<Page<ItemResponse>> getByOwnerId(@RequestParam("ownerId") Long ownerId, Pageable pageable) {
+  public Page<ItemResponse> getByOwnerId(@RequestParam("ownerId") Long ownerId, Pageable pageable) {
     return itemService.getByOwnerId(ownerId, pageable);
   }
 }

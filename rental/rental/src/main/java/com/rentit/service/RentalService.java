@@ -59,11 +59,8 @@ public class RentalService {
   }
 
   @Transactional(readOnly = true)
-  public List<RentalResponse> getRentalsByUserId(Long userId) {
-    List<Rental> rentals = rentalRepository.findByUserId(userId);
-    return rentals.stream()
-        .map(this::mapToResponse)
-        .collect(Collectors.toList());
+  public Page<RentalResponse> getRentalsByUserId(Long userId,Pageable pageable) {
+    return rentalRepository.findByUserId(userId, pageable).map(this::mapToResponse);
   }
 
   @Transactional

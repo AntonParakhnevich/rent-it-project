@@ -29,43 +29,42 @@ public class ItemController {
   private final ItemService itemService;
 
   @PostMapping
-  public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody ItemRequest request) {
-    return ResponseEntity.ok(itemService.createItem(request));
+  public ItemResponse createItem(@Valid @RequestBody ItemRequest request) {
+    return itemService.createItem(request);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ItemResponse> getItem(@PathVariable Long id) {
-    return ResponseEntity.ok(itemService.getItemById(id));
+  public ItemResponse getItem(@PathVariable Long id) {
+    return itemService.getItemById(id);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ItemResponse> updateItem(@PathVariable Long id, @Valid @RequestBody ItemRequest request) {
-    return ResponseEntity.ok(itemService.updateItem(id, request));
+  public ItemResponse updateItem(@PathVariable Long id, @Valid @RequestBody ItemRequest request) {
+    return itemService.updateItem(id, request);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+  public void deleteItem(@PathVariable Long id) {
     itemService.deleteItem(id);
-    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/category/{category}")
-  public ResponseEntity<Page<ItemResponse>> getItemsByCategory(@PathVariable ItemCategory category, Pageable pageable) {
-    return ResponseEntity.ok(itemService.getItemsByCategory(category, pageable));
+  public Page<ItemResponse> getItemsByCategory(@PathVariable ItemCategory category, Pageable pageable) {
+    return itemService.getItemsByCategory(category, pageable);
   }
 
   @GetMapping
-  public ResponseEntity<Page<ItemResponse>> getItemsByOwner(@RequestParam Long ownerId, Pageable pageable) {
-    return ResponseEntity.ok(itemService.getItemsByOwner(ownerId, pageable));
+  public Page<ItemResponse> getItemsByOwner(@RequestParam Long ownerId, Pageable pageable) {
+    return itemService.getItemsByOwner(ownerId, pageable);
   }
 
   @GetMapping("/price")
-  public ResponseEntity<Page<ItemResponse>> getItemsByMaxPrice(@RequestParam BigDecimal maxPrice, Pageable pageable) {
-    return ResponseEntity.ok(itemService.getItemsByMaxPrice(maxPrice, pageable));
+  public Page<ItemResponse> getItemsByMaxPrice(@RequestParam BigDecimal maxPrice, Pageable pageable) {
+    return itemService.getItemsByMaxPrice(maxPrice, pageable);
   }
 
   @GetMapping("/location")
-  public ResponseEntity<List<ItemResponse>> getItemsByLocation(@RequestParam String location) {
-    return ResponseEntity.ok(itemService.getItemsByLocation(location));
+  public List<ItemResponse> getItemsByLocation(@RequestParam String location) {
+    return itemService.getItemsByLocation(location);
   }
 } 

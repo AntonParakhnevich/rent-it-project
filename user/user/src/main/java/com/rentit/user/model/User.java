@@ -32,6 +32,9 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "unp")
+    private String unp; // УНП для арендодателей
+
     @Column(name = "is_verified")
     private boolean isVerified = false;
 

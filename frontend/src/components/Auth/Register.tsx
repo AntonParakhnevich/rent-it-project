@@ -12,6 +12,8 @@ const Register: React.FC = () => {
     lastName: '',
     phoneNumber: '',
     description: '',
+    role: 'RENTER', // По умолчанию арендатор
+    unp: '',
   });
   const [localError, setLocalError] = useState('');
   
@@ -25,7 +27,7 @@ const Register: React.FC = () => {
     }
   }, [user, navigate]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -57,6 +59,17 @@ const Register: React.FC = () => {
       return;
     }
 
+    // Валидация УНП для арендодателей
+    if (formData.role === 'LANDLORD' && !formData.unp.trim()) {
+      setLocalError('УНП обязателен для арендодателей');
+      return;
+    }
+
+    if (formData.role === 'LANDLORD' && formData.unp.trim().length !== 9) {
+      setLocalError('УНП должен содержать 9 цифр');
+      return;
+    }
+
     try {
       await register({
         email: formData.email,
@@ -65,7 +78,8 @@ const Register: React.FC = () => {
         lastName: formData.lastName,
         phoneNumber: formData.phoneNumber || undefined,
         description: formData.description || undefined,
-        roles: ['USER'], // По умолчанию роль пользователя
+        unp: formData.role === 'LANDLORD' ? formData.unp : undefined,
+        roles: [formData.role],
       });
       navigate('/dashboard');
     } catch (error) {
@@ -147,6 +161,46 @@ const Register: React.FC = () => {
               disabled={isLoading}
             />
           </div>
+
+          <div className="form-group">
+            <label htmlFor="role" className="form-label">
+              Роль *
+            </label>
+            <select
+              id="role"
+              name="role"
+              className="form-input"
+              value={formData.role}
+              onChange={handleChange}
+              disabled={isLoading}
+            >
+              <option value="RENTER">Арендатор</option>
+              <option value="LANDLORD">Арендодатель</option>
+            </select>
+          </div>
+
+          {formData.role === 'LANDLORD' && (
+            <div className="form-group">
+              <label htmlFor="unp" className="form-label">
+                УНП (Учетный номер плательщика) *
+              </label>
+              <input
+                type="text"
+                id="unp"
+                name="unp"
+                className="form-input"
+                value={formData.unp}
+                onChange={handleChange}
+                placeholder="123456789"
+                disabled={isLoading}
+                maxLength={9}
+                pattern="[0-9]{9}"
+              />
+              <small className="form-hint">
+                9-значный номер для арендодателей
+              </small>
+            </div>
+          )}
 
           <div className="form-row">
             <div className="form-group">

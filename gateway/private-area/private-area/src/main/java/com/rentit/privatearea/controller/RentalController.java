@@ -4,6 +4,8 @@ import com.rentit.privatearea.service.rental.RentalService;
 import com.rentit.rental.api.RentalResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +27,18 @@ public class RentalController {
   }
 
   @GetMapping
-  public List<RentalResponse> getAllByUserId(@RequestParam("userId") Long userId) {
-    return rentalService.getAllByUserId(userId);
+  public Page<RentalResponse> getAllByUserId(@RequestParam("userId") Long userId,  Pageable pageable) {
+    return rentalService.getAllByUserId(userId, pageable);
+  }
+
+  @GetMapping("/renter/{renterId}")
+  public Page<RentalResponse> getAllByRenterId(@PathVariable("renterId") Long renterId, Pageable pageable) {
+    return rentalService.getAllByRenterId(renterId, pageable);
+  }
+
+  @GetMapping("/owner/{ownerId}")
+  public Page<RentalResponse> getAllByOwnerId(@PathVariable("ownerId") Long ownerId, Pageable pageable) {
+    return rentalService.getAllByOwnerId(ownerId, pageable);
   }
 
   @PostMapping("/confirm")

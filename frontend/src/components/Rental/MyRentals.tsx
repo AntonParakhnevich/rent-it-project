@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePermissions } from '../../hooks/usePermissions';
 import { RentalResponse } from '../../types';
 import { rentalApi } from '../../services/api';
+import { LandlordOnly } from '../Auth/ProtectedComponent';
 import './MyRentals.css';
 
 const MyRentals: React.FC = () => {
   const { user } = useAuth();
+  const { isLandlord, canConfirmRentals } = usePermissions();
   const [rentals, setRentals] = useState<RentalResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'startDate' | 'endDate' | 'totalPrice'>('startDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [viewMode, setViewMode] = useState<'renter' | 'owner'>('renter');
+
+  // Автоматически переключаем в режим renter, если пользователь не арендодатель
+  useEffect(() => {
+    if (viewMode === 'owner' && !isLandlord()) {
+      setViewMode('renter');
+    }
+  }, [viewMode, isLandlord]);
+  const [confirmingRental, setConfirmingRental] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchRentals = async () => {
@@ -21,7 +33,22 @@ const MyRentals: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const userRentals = await rentalApi.getAllByUserId(user.userId);
+        
+        let userRentals: RentalResponse[] = [];
+        
+        if (viewMode === 'renter') {
+          // Получаем аренды где пользователь - арендатор
+          const response = await rentalApi.getRentalsByRenter(user.userId);
+          userRentals = response.content;
+        } else if (viewMode === 'owner' && isLandlord()) {
+          // Получаем аренды где пользователь - арендодатель (владелец предметов)
+          const response = await rentalApi.getRentalsByOwner(user.userId);
+          userRentals = response.content;
+        } else {
+          // Если режим owner, но пользователь не арендодатель, показываем пустой список
+          userRentals = [];
+        }
+        
         setRentals(userRentals);
       } catch (error: any) {
         setError(error.response?.data?.message || 'Ошибка загрузки аренд');
@@ -31,7 +58,7 @@ const MyRentals: React.FC = () => {
     };
 
     fetchRentals();
-  }, [user]);
+  }, [user, viewMode]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -47,6 +74,30 @@ const MyRentals: React.FC = () => {
       style: 'currency',
       currency: 'RUB'
     }).format(price);
+  };
+
+  const handleConfirmRental = async (rentalId: number) => {
+    if (!canConfirmRentals()) return;
+
+    try {
+      setConfirmingRental(rentalId);
+      await rentalApi.confirm(rentalId);
+      
+      // Обновляем статус локально
+      setRentals(prevRentals => 
+        prevRentals.map(rental => 
+          rental.id === rentalId 
+            ? { ...rental, status: 'CONFIRMED' }
+            : rental
+        )
+      );
+      
+      alert('Аренда успешно подтверждена!');
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Ошибка подтверждения аренды');
+    } finally {
+      setConfirmingRental(null);
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -198,6 +249,34 @@ const MyRentals: React.FC = () => {
         </div>
       </div>
 
+      {/* Переключатель режимов для арендодателей */}
+      {isLandlord() && (
+        <div className="view-mode-switcher">
+          <div className="mode-buttons">
+            <button 
+              className={`mode-btn ${viewMode === 'renter' ? 'active' : ''}`}
+              onClick={() => setViewMode('renter')}
+            >
+              <span className="mode-icon">🏠</span>
+              Мои аренды
+            </button>
+            <button 
+              className={`mode-btn ${viewMode === 'owner' ? 'active' : ''}`}
+              onClick={() => setViewMode('owner')}
+            >
+              <span className="mode-icon">🏢</span>
+              Аренды моих предметов
+            </button>
+          </div>
+          <p className="mode-description">
+            {viewMode === 'renter' 
+              ? 'Предметы, которые вы арендуете у других'
+              : 'Предметы, которые другие арендуют у вас'
+            }
+          </p>
+        </div>
+      )}
+
       {/* Фильтры и сортировка */}
       <div className="rentals-controls">
         <div className="filters">
@@ -309,7 +388,29 @@ const MyRentals: React.FC = () => {
                   Подробнее
                 </Link>
                 
-                {rental.status === 'PENDING' && (
+                {/* Кнопка подтверждения для арендодателей */}
+                {viewMode === 'owner' && canConfirmRentals() && rental.status === 'PENDING' && (
+                  <button 
+                    className="btn btn-success btn-sm"
+                    onClick={() => handleConfirmRental(rental.id)}
+                    disabled={confirmingRental === rental.id}
+                  >
+                    {confirmingRental === rental.id ? (
+                      <>
+                        <span className="spinner-sm"></span>
+                        Подтверждаю...
+                      </>
+                    ) : (
+                      <>
+                        <span>✓</span>
+                        Подтвердить
+                      </>
+                    )}
+                  </button>
+                )}
+                
+                {/* Кнопка отмены для арендаторов */}
+                {viewMode === 'renter' && rental.status === 'PENDING' && (
                   <button 
                     className="btn btn-secondary btn-sm"
                     onClick={() => alert('Функция отмены в разработке')}

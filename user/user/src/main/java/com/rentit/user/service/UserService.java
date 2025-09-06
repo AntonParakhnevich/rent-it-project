@@ -31,6 +31,7 @@ public class UserService {
     user.setLastName(request.getLastName());
     user.setPhoneNumber(request.getPhoneNumber());
     user.setDescription(request.getDescription());
+    user.setUnp(request.getUnp());
     user.setRoles(request.getRoles().stream().map(Role::valueOf).collect(Collectors.toSet()));
     User savedUser = userRepository.save(user);
     return convertToUserResponse(savedUser);
@@ -87,6 +88,7 @@ public class UserService {
     dto.setLastName(user.getLastName());
     dto.setPhoneNumber(user.getPhoneNumber());
     dto.setDescription(user.getDescription());
+    dto.setUnp(user.getUnp());
     dto.setVerified(user.isVerified());
     dto.setEnabled(user.isEnabled());
     dto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));

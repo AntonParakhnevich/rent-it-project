@@ -34,6 +34,46 @@
   color: #666;
 }
 
+.user-roles {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.role-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-landlord {
+  background: linear-gradient(45deg, #4caf50, #45a049);
+  color: white;
+}
+
+.role-renter {
+  background: linear-gradient(45deg, #2196f3, #1976d2);
+  color: white;
+}
+
+.role-admin {
+  background: linear-gradient(45deg, #ff9800, #f57c00);
+  color: white;
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
