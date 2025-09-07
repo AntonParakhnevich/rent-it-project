@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/gateway/private-area/private-area/rent-it-project.gateway.private-area.private-area.main.iml" filepath="$PROJECT_DIR$/.idea/modules/gateway/private-area/private-area/rent-it-project.gateway.private-area.private-area.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/integration/tax/tax/rent-it-project.integration.tax.tax.main.iml" filepath="$PROJECT_DIR$/.idea/modules/integration/tax/tax/rent-it-project.integration.tax.tax.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/rental/rental/rent-it-project.rental.rental.main.iml" filepath="$PROJECT_DIR$/.idea/modules/rental/rental/rent-it-project.rental.rental.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/user/user/rent-it-project.user.user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/user/user/rent-it-project.user.user.main.iml" />
     </modules>

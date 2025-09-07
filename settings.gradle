@@ -8,4 +8,6 @@ include 'rental:rental',
     'debezium:debezium',
     'debezium:debezium-api',
     'gateway:private-area:private-area',
-    'frontend'
+    'frontend',
+    'integration:tax:tax',
+    'integration:tax:tax-api'

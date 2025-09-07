@@ -15,6 +15,10 @@
             <option value="$PROJECT_DIR$/gateway" />
             <option value="$PROJECT_DIR$/gateway/private-area" />
             <option value="$PROJECT_DIR$/gateway/private-area/private-area" />
+            <option value="$PROJECT_DIR$/integration" />
+            <option value="$PROJECT_DIR$/integration/tax" />
+            <option value="$PROJECT_DIR$/integration/tax/tax" />
+            <option value="$PROJECT_DIR$/integration/tax/tax-api" />
             <option value="$PROJECT_DIR$/notification" />
             <option value="$PROJECT_DIR$/notification/internal-notification" />
             <option value="$PROJECT_DIR$/notification/internal-notification/internal-notification" />
