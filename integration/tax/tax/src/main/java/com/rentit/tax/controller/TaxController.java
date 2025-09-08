@@ -16,9 +16,8 @@ public class TaxController {
 
   private final TaxService taxService;
 
-  @PostMapping()
+  @PostMapping("/check")
   public TaxResponse check(@RequestBody TaxRequest taxRequest) {
-
     return taxService.check(taxRequest);
   }
 }

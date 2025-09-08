@@ -1,5 +1,8 @@
 package com.rentit.user.service;
 
+import com.rentit.tax.api.TaxConnector;
+import com.rentit.tax.api.TaxRequest;
+import com.rentit.tax.api.TaxResponse;
 import com.rentit.user.api.UserCreateRequest;
 import com.rentit.user.api.UserLoginResponse;
 import com.rentit.user.api.UserResponse;
@@ -18,12 +21,14 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final UserRatingService userRatingService;
+  private final TaxConnector taxConnector;
 
   @Transactional
   public UserResponse createUser(UserCreateRequest request) {
     if (userRepository.existsByEmail(request.getEmail())) {
       throw new RuntimeException("Пользователь с таким email уже существует");
     }
+    checkUnpIfNeeded(request);
     User user = new User();
     user.setEmail(request.getEmail());
     user.setPassword(request.getPassword());
@@ -93,5 +98,18 @@ public class UserService {
     dto.setEnabled(user.isEnabled());
     dto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
     return dto;
+  }
+
+  private void checkUnpIfNeeded(UserCreateRequest request) {
+    if (request.getRoles().contains(Role.LANDLORD.name())) {
+      TaxRequest taxRequest = new TaxRequest();
+      taxRequest.setFirstName(request.getFirstName());
+      taxRequest.setLastName(request.getLastName());
+      taxRequest.setUnp(request.getUnp());
+      TaxResponse response = taxConnector.check(taxRequest);
+      if (!response.isValid()) {
+        throw new IllegalArgumentException("Unp invalid, unp=" + request.getUnp());
+      }
+    }
   }
 } 

@@ -1,8 +1,8 @@
 package com.rentit.privatearea.service.rental;
 
+import com.rentit.privatearea.security.SessionService;
 import com.rentit.rental.api.RentalConnector;
 import com.rentit.rental.api.RentalResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,20 +13,30 @@ import org.springframework.stereotype.Service;
 public class RentalService {
 
   private final RentalConnector rentalConnector;
+  private final SessionService sessionService;
 
   public RentalResponse getById(Long id) {
     return rentalConnector.getById(id);
   }
 
   public Page<RentalResponse> getAllByUserId(Long userId, Pageable pageable) {
-    return rentalConnector.getAllByUserId(userId,pageable);
+    if (!sessionService.getCurrentUserId().equals(userId)) {
+      return null;
+    }
+    return rentalConnector.getAllByUserId(userId, pageable);
   }
 
   public Page<RentalResponse> getAllByRenterId(Long renterId, Pageable pageable) {
+    if (!sessionService.getCurrentUserId().equals(renterId)) {
+      return null;
+    }
     return rentalConnector.getAllByRenterId(renterId, pageable);
   }
 
   public Page<RentalResponse> getAllByOwnerId(Long ownerId, Pageable pageable) {
+    if (!sessionService.getCurrentUserId().equals(ownerId)) {
+      return null;
+    }
     return rentalConnector.getAllByOwnerId(ownerId, pageable);
   }
 

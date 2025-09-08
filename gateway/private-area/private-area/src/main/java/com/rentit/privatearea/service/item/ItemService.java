@@ -1,5 +1,6 @@
 package com.rentit.privatearea.service.item;
 
+import com.rentit.privatearea.security.SessionService;
 import com.rentit.rental.api.ItemConnector;
 import com.rentit.rental.api.ItemRequest;
 import com.rentit.rental.api.ItemResponse;
@@ -14,8 +15,12 @@ import org.springframework.stereotype.Service;
 public class ItemService {
 
   private final ItemConnector itemConnector;
+  private final SessionService sessionService;
 
   public ItemResponse create(ItemRequest request) {
+    if (!sessionService.getCurrentUserId().equals(request.getOwnerId())) {
+      return null;
+    }
     return itemConnector.create(request);
   }
 

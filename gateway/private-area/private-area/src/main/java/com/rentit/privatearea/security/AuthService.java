@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +43,13 @@ public class AuthService {
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
     );
+    Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
     UserLoginResponse user = Optional.ofNullable(userConnector.getByEmail(request.getEmail()))
         .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
+    if (authentication != null) {
+      // сюда кладём любое поле
+    }
     AuthResponse response = new AuthResponse();
     response.setAccessToken(jwtService.generateToken(user.getEmail(), new HashMap<>()));
     response.setUserId(user.getId());

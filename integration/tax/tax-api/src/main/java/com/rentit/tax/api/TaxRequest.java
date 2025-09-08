@@ -5,12 +5,17 @@ public class TaxRequest {
   private String unp;
   private String firstName;
   private String lastName;
+  private String patronymic;
   private Long userId;
 
-  public TaxRequest(String unp, String firstName, String lastName, Long userId) {
+  public TaxRequest() {
+  }
+
+  public TaxRequest(String unp, String firstName, String lastName, String patronymic, Long userId) {
     this.unp = unp;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.patronymic = patronymic;
     this.userId = userId;
   }
 
@@ -44,5 +49,13 @@ public class TaxRequest {
 
   public void setUserId(Long userId) {
     this.userId = userId;
+  }
+
+  public String getPatronymic() {
+    return patronymic;
+  }
+
+  public void setPatronymic(String patronymic) {
+    this.patronymic = patronymic;
   }
 }

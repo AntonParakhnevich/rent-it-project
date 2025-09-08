@@ -19,8 +19,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     implementation(project(mapOf("path" to ":user:user-api")))
+    implementation(project(mapOf("path" to ":integration:tax:tax-api")))
 
     runtimeOnly("com.mysql:mysql-connector-j")
 
@@ -39,4 +41,10 @@ tasks.withType<Test> {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-} 
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
+    }
+}
