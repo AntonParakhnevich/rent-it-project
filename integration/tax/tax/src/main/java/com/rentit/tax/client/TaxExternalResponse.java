@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 @Data
 public class TaxExternalResponse {
 
-  private final TaxRaw raw;
-
+  private TaxRaw row;
 
 }

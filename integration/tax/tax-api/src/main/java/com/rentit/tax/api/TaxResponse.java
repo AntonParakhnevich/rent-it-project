@@ -4,6 +4,9 @@ public class TaxResponse {
 
   private boolean isValid;
 
+  public TaxResponse() {
+  }
+
   public TaxResponse(boolean isValid) {
     this.isValid = isValid;
   }
