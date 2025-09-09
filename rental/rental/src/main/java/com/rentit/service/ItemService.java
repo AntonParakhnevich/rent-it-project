@@ -2,13 +2,23 @@ package com.rentit.service;
 
 import com.rentit.model.Item;
 import com.rentit.model.ItemCategory;
+import com.rentit.model.RentalStatus;
 import com.rentit.rental.api.ItemRequest;
 import com.rentit.rental.api.ItemResponse;
+import com.rentit.rental.api.UnavailableDateItemResponse;
 import com.rentit.repository.ItemRepository;
+import com.rentit.repository.RentalRepository;
 import com.rentit.user.api.UserConnector;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemService {
 
   private final ItemRepository itemRepository;
+  private final RentalRepository rentalRepository;
   private final UserConnector userConnector;
+
+  private final List<RentalStatus> ACTIVE_STATUSES = Arrays.asList(RentalStatus.PENDING, RentalStatus.CONFIRMED,
+      RentalStatus.IN_PROGRESS);
 
   @Transactional
   public ItemResponse createItem(ItemRequest request) {
@@ -103,6 +117,35 @@ public class ItemService {
         .stream()
         .map(this::mapToResponse)
         .toList();
+  }
+
+  public UnavailableDateItemResponse getUnavailableDatesByItemIdBetweenDates(Long itemId, LocalDate startDate,
+      LocalDate endDate) {
+    Set<LocalDate> unavailableDates = rentalRepository.findByItemIdAndStatusInAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
+            itemId,
+            ACTIVE_STATUSES,
+            LocalDateTime.of(endDate, LocalTime.MAX),
+            LocalDateTime.of(startDate, LocalDateTime.MIN.toLocalTime()))
+        .stream()
+        .flatMap(r -> intersect(startDate, endDate, r.getStartDate().toLocalDate(),
+            r.getEndDate().toLocalDate()).stream())
+        .collect(Collectors.toSet());
+
+    return new UnavailableDateItemResponse(itemId, unavailableDates);
+  }
+
+  private Set<LocalDate> intersect(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {
+    LocalDate maxStart = start1.isAfter(start2) || start1.isEqual(start2) ? start1 : start2;
+    LocalDate minEnd = end1.isBefore(end2) || end1.isEqual(end2) ? end1 : end2;
+
+    if (maxStart.isAfter(minEnd)) {
+      return Set.of();
+    }
+
+    long days = java.time.temporal.ChronoUnit.DAYS.between(maxStart, minEnd);
+    return Stream.iterate(maxStart, d -> d.plusDays(1))
+        .limit(days + 1) // +1, чтобы включить minEnd
+        .collect(Collectors.toSet());
   }
 
   private ItemResponse mapToResponse(Item item) {

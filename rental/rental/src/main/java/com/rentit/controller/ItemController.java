@@ -3,14 +3,15 @@ package com.rentit.controller;
 import com.rentit.model.ItemCategory;
 import com.rentit.rental.api.ItemRequest;
 import com.rentit.rental.api.ItemResponse;
+import com.rentit.rental.api.UnavailableDateItemResponse;
 import com.rentit.service.ItemService;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,4 +68,13 @@ public class ItemController {
   public List<ItemResponse> getItemsByLocation(@RequestParam String location) {
     return itemService.getItemsByLocation(location);
   }
-} 
+
+  @GetMapping("/unavailable-dates")
+  public UnavailableDateItemResponse getUnavailableDateByItemId(
+      @RequestParam("itemId") Long itemId,
+      @RequestParam("startDate") LocalDate startDate,
+      @RequestParam("endDate") LocalDate endDate) {
+    return itemService.getUnavailableDatesByItemIdBetweenDates(itemId, startDate, endDate);
+
+  }
+}
