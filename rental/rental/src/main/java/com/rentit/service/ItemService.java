@@ -127,16 +127,20 @@ public class ItemService {
             LocalDateTime.of(endDate, LocalTime.MAX),
             LocalDateTime.of(startDate, LocalDateTime.MIN.toLocalTime()))
         .stream()
-        .flatMap(r -> intersect(startDate, endDate, r.getStartDate().toLocalDate(),
-            r.getEndDate().toLocalDate()).stream())
+        .flatMap(rental -> intersect(startDate, endDate, rental.getStartDate().toLocalDate(),
+            rental.getEndDate().toLocalDate()).stream())
         .collect(Collectors.toSet());
 
     return new UnavailableDateItemResponse(itemId, unavailableDates);
   }
 
-  private Set<LocalDate> intersect(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {
-    LocalDate maxStart = start1.isAfter(start2) || start1.isEqual(start2) ? start1 : start2;
-    LocalDate minEnd = end1.isBefore(end2) || end1.isEqual(end2) ? end1 : end2;
+  private Set<LocalDate> intersect(LocalDate firstStartDate, LocalDate firstEndDate, LocalDate secondStartDate,
+      LocalDate secondEndDate) {
+    LocalDate maxStart =
+        firstStartDate.isAfter(secondStartDate) || firstStartDate.isEqual(secondStartDate) ? firstStartDate
+            : secondStartDate;
+    LocalDate minEnd =
+        firstEndDate.isBefore(secondEndDate) || firstEndDate.isEqual(secondEndDate) ? firstEndDate : secondEndDate;
 
     if (maxStart.isAfter(minEnd)) {
       return Set.of();
