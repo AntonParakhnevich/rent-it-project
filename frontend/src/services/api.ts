@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LoginRequest, UserCreateRequest, AuthResponse, UserResponse, RentalResponse, ItemRequest, ItemResponse, PageResponse } from '../types';
+import { LoginRequest, UserCreateRequest, AuthResponse, UserResponse, RentalResponse, ItemRequest, ItemResponse, PageResponse, ItemSearchFilters, UnavailableDatesResponse } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8078';
 
@@ -96,8 +96,48 @@ export const itemApi = {
     return response.data;
   },
 
+  getById: async (id: number): Promise<ItemResponse> => {
+    const response = await apiClient.get<ItemResponse>(`/items/${id}`);
+    return response.data;
+  },
+
   getByOwnerId: async (ownerId: number, page: number = 0, size: number = 10): Promise<PageResponse<ItemResponse>> => {
     const response = await apiClient.get<PageResponse<ItemResponse>>(`/items?ownerId=${ownerId}&page=${page}&size=${size}`);
+    return response.data;
+  },
+
+  // Поиск товаров с фильтрами
+  search: async (filters: ItemSearchFilters = {}): Promise<PageResponse<ItemResponse>> => {
+    const params = new URLSearchParams();
+    
+    // Всегда ищем только доступные товары
+    params.append('available', 'true');
+    
+    if (filters.category) params.append('category', filters.category);
+    if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
+    if (filters.location) params.append('location', filters.location);
+    params.append('page', (filters.page || 0).toString());
+    params.append('size', (filters.size || 20).toString());
+
+    const queryString = params.toString();
+    // Используем универсальный endpoint для всех поисковых запросов
+    const endpoint = '/items';
+    
+    const response = await apiClient.get<PageResponse<ItemResponse>>(`${endpoint}?${queryString}`);
+    return response.data;
+  },
+
+  // Получить все доступные товары (для RENTER)
+  getAvailable: async (page: number = 0, size: number = 20): Promise<PageResponse<ItemResponse>> => {
+    const response = await apiClient.get<PageResponse<ItemResponse>>(`/items?available=true&page=${page}&size=${size}`);
+    return response.data;
+  },
+
+  // Получить недоступные даты для товара
+  getUnavailableDates: async (itemId: number, startDate: string, endDate: string): Promise<UnavailableDatesResponse> => {
+    const response = await apiClient.get<UnavailableDatesResponse>(
+      `/items/unavailable-dates?itemId=${itemId}&startDate=${startDate}&endDate=${endDate}`
+    );
     return response.data;
   },
 };

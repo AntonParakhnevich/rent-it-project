@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePermissions } from '../../hooks/usePermissions';
-import { ProtectedComponent, LandlordOnly } from '../Auth/ProtectedComponent';
+import { ProtectedComponent, LandlordOnly, RenterOnly } from '../Auth/ProtectedComponent';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
@@ -48,6 +48,19 @@ const Dashboard: React.FC = () => {
             </Link>
           </div>
         </div>
+
+        <RenterOnly>
+          <div className="dashboard-card">
+            <div className="card-icon">🔍</div>
+            <h3>Поиск товаров</h3>
+            <p>Найти товары для аренды с фильтрами по категории, цене и местоположению</p>
+            <div className="card-actions">
+              <Link to="/search" className="btn btn-primary">
+                Найти товары
+              </Link>
+            </div>
+          </div>
+        </RenterOnly>
 
         <LandlordOnly>
           <div className="dashboard-card">
@@ -103,6 +116,12 @@ const Dashboard: React.FC = () => {
       <div className="quick-actions">
         <h2>Быстрые действия</h2>
         <div className="actions-grid">
+          <RenterOnly>
+            <Link to="/search" className="action-btn">
+              <span className="action-icon">🔍</span>
+              Найти товары для аренды
+            </Link>
+          </RenterOnly>
           <LandlordOnly>
             <Link to="/items/create" className="action-btn">
               <span className="action-icon">➕</span>

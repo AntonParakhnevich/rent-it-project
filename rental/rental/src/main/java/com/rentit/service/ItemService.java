@@ -119,6 +119,24 @@ public class ItemService {
         .toList();
   }
 
+  @Transactional(readOnly = true)
+  public Page<ItemResponse> getItemsByLocationPaged(String location, Pageable pageable) {
+    return itemRepository.findByLocationContainingIgnoreCase(location, pageable)
+        .map(this::mapToResponse);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<ItemResponse> getAvailableItems(Pageable pageable) {
+    return itemRepository.findByIsAvailable(true, pageable)
+        .map(this::mapToResponse);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<ItemResponse> searchItems(ItemCategory category, BigDecimal maxPrice, String location, Pageable pageable) {
+    return itemRepository.findByFilters(category, maxPrice, location, pageable)
+        .map(this::mapToResponse);
+  }
+
   public UnavailableDateItemResponse getUnavailableDatesByItemIdBetweenDates(Long itemId, LocalDate startDate,
       LocalDate endDate) {
     Set<LocalDate> unavailableDates = rentalRepository.findByItemIdAndStatusInAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(

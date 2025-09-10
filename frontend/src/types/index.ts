@@ -87,6 +87,21 @@ export interface PageResponse<T> {
   last: boolean;
 }
 
+// Типы для поиска товаров
+export interface ItemSearchFilters {
+  category?: string;
+  maxPrice?: number;
+  location?: string;
+  page?: number;
+  size?: number;
+}
+
+// Типы для недоступных дат
+export interface UnavailableDatesResponse {
+  itemId: number;
+  unavailableDates: string[];
+}
+
 // Контекст аутентификации
 export interface AuthContextType {
   user: AuthResponse | null;

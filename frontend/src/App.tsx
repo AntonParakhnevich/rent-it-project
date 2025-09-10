@@ -10,6 +10,8 @@ import RentalDetails from './components/Rental/RentalDetails';
 import MyRentals from './components/Rental/MyRentals';
 import MyItems from './components/Item/MyItems';
 import CreateItem from './components/Item/CreateItem';
+import ItemSearch from './components/Item/ItemSearch';
+import ItemDetails from './components/Item/ItemDetails';
 import './App.css';
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="search" element={<ItemSearch />} />
+            <Route path="items/:itemId" element={<ItemDetails />} />
             <Route path="my-rentals" element={<MyRentals />} />
             <Route path="my-items" element={<MyItems />} />
             <Route path="items/create" element={<CreateItem />} />
