@@ -1,5 +1,6 @@
 package com.rentit.rental.api;
 
+import java.time.LocalDate;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,8 @@ public interface ItemConnector {
 
   @GetMapping("/items?ownerId={ownerId}")
   Page<ItemResponse> getByOwnerId(@PathVariable("ownerId") Long ownerId, Pageable pageable);
+
+  @GetMapping("/unavailable-dates?itemId={itemId}&startDate={startDate}&endDate={endDate}")
+  UnavailableDateItemResponse getUnavailableDatesByItemIdAndDates(@PathVariable("itemId") Long itemId,
+      @PathVariable("startDate") LocalDate startDate, @PathVariable("endDate") LocalDate endDate);
 }

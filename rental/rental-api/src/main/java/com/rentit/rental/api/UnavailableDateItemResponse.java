@@ -1,7 +1,6 @@
 package com.rentit.rental.api;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 public class UnavailableDateItemResponse {
