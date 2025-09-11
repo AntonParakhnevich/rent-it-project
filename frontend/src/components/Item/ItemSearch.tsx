@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ItemResponse, ItemSearchFilters } from '../../types';
 import { itemApi } from '../../services/api';
@@ -45,7 +45,7 @@ const ItemSearch: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      const response = await itemApi.getAvailable(searchFilters.page, searchFilters.size);
+      const response = await itemApi.getAvailable(searchFilters.page || 0, searchFilters.size || 20);
       
       setItems(response.content);
       setCurrentPage(response.number);
@@ -78,28 +78,17 @@ const ItemSearch: React.FC = () => {
     }
   }, []);
 
-  // Флаг для отслеживания первой загрузки
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  // Используем useRef для отслеживания выполненных запросов
+  const hasLoadedInitialData = useRef(false);
 
   useEffect(() => {
-    if (isRenter() && isInitialLoad) {
+    if (isRenter() && !hasLoadedInitialData.current) {
       // Загружаем товары только при первой загрузке компонента
-      const hasFilters = !!(
-        (filters.category && filters.category !== '') || 
-        filters.maxPrice || 
-        (filters.location && filters.location !== '')
-      );
-      
-      if (hasFilters) {
-        console.log('Initial load with filters:', filters);
-        searchItems(filters);
-      } else {
-        console.log('Initial load without filters:', filters);
-        loadItems(filters);
-      }
-      setIsInitialLoad(false);
+      console.log('Initial load without filters');
+      loadItems({ page: 0, size: 20 });
+      hasLoadedInitialData.current = true;
     }
-  }, [isRenter, isInitialLoad, filters, searchItems, loadItems]);
+  }, [isRenter, loadItems]);
 
   const handleFilterChange = (field: keyof ItemSearchFilters, value: any) => {
     const newFilters = { 
