@@ -60,4 +60,9 @@ public class RentalController {
   public ResponseEntity<Page<RentalResponse>> getRentalsByOwner(@PathVariable Long ownerId, Pageable pageable) {
     return ResponseEntity.ok(rentalService.getRentalsByOwner(ownerId, pageable));
   }
+
+  @PutMapping("/cancel/{id}")
+  public ResponseEntity<RentalResponse> cancelRental(@PathVariable Long id) {
+    return ResponseEntity.ok(rentalService.updateRentalStatus(id, RentalStatus.CANCELLED));
+  }
 } 

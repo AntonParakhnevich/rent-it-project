@@ -1,9 +1,8 @@
 package com.rentit.rental.api;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class RentalResponse {
 
@@ -22,6 +21,7 @@ public class RentalResponse {
   private BigDecimal depositAmount;
 
   private String status;
+  private Long landLordId;
 
   public Long getId() {
     return id;
@@ -85,5 +85,13 @@ public class RentalResponse {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+
+  public Long getLandLordId() {
+    return landLordId;
+  }
+
+  public void setLandLordId(Long landLordId) {
+    this.landLordId = landLordId;
   }
 }

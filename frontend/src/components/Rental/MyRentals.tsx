@@ -25,6 +25,7 @@ const MyRentals: React.FC = () => {
     }
   }, [viewMode, isLandlord]);
   const [confirmingRental, setConfirmingRental] = useState<number | null>(null);
+  const [cancellingRental, setCancellingRental] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchRentals = async () => {
@@ -97,6 +98,32 @@ const MyRentals: React.FC = () => {
       alert(error.response?.data?.message || 'Ошибка подтверждения аренды');
     } finally {
       setConfirmingRental(null);
+    }
+  };
+
+  const handleCancelRental = async (rentalId: number) => {
+    if (!window.confirm('Вы уверены, что хотите отменить эту аренду?')) {
+      return;
+    }
+
+    try {
+      setCancellingRental(rentalId);
+      await rentalApi.cancel(rentalId);
+      
+      // Обновляем статус локально
+      setRentals(prevRentals => 
+        prevRentals.map(rental => 
+          rental.id === rentalId 
+            ? { ...rental, status: 'CANCELLED' }
+            : rental
+        )
+      );
+      
+      alert('Аренда успешно отменена!');
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Ошибка отмены аренды');
+    } finally {
+      setCancellingRental(null);
     }
   };
 
@@ -409,13 +436,24 @@ const MyRentals: React.FC = () => {
                   </button>
                 )}
                 
-                {/* Кнопка отмены для арендаторов */}
-                {viewMode === 'renter' && rental.status === 'PENDING' && (
+                {/* Кнопка отмены для арендаторов и арендодателей */}
+                {(rental.status === 'PENDING' || rental.status === 'CONFIRMED') && (
                   <button 
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => alert('Функция отмены в разработке')}
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleCancelRental(rental.id)}
+                    disabled={cancellingRental === rental.id}
                   >
-                    Отменить
+                    {cancellingRental === rental.id ? (
+                      <>
+                        <span className="spinner-sm"></span>
+                        Отменяю...
+                      </>
+                    ) : (
+                      <>
+                        <span>✗</span>
+                        Отменить
+                      </>
+                    )}
                   </button>
                 )}
               </div>

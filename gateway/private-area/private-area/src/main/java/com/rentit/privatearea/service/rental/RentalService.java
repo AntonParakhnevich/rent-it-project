@@ -46,8 +46,17 @@ public class RentalService {
   }
 
   public RentalResponse createRental(RentalRequest request) {
-    // Устанавливаем текущего пользователя как арендатора
     request.setRenterId(sessionService.getCurrentUserId());
     return rentalConnector.createRental(request);
+  }
+
+  public RentalResponse cancelRental(Long id) {
+    RentalResponse rental = rentalConnector.getById(id);
+    Long currentUserId = sessionService.getCurrentUserId();
+    if (rental.getRenterId().equals(currentUserId) || rental.getLandLordId().equals(currentUserId)) {
+      return rentalConnector.cancelRental(id);
+    } else {
+      throw new RuntimeException("У вас нет прав на отмену этой аренды");
+    }
   }
 }

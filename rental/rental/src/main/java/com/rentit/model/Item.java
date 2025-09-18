@@ -51,9 +51,6 @@ public class Item {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    private Set<Rental> rentals = new HashSet<>();
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

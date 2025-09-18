@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "rentalConnector", url = "http://localhost:8081")
@@ -29,4 +30,6 @@ public interface RentalConnector {
   @PostMapping("/rentals")
   RentalResponse createRental(@RequestBody RentalRequest request);
 
+  @PutMapping("/rentals/cancel/{id}")
+  RentalResponse cancelRental(@PathVariable("id") Long id);
 }

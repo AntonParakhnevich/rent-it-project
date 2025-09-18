@@ -92,6 +92,11 @@ export const rentalApi = {
     const response = await apiClient.post<RentalResponse>('/rentals', request);
     return response.data;
   },
+
+  cancel: async (id: number): Promise<RentalResponse> => {
+    const response = await apiClient.put<RentalResponse>(`/rentals/cancel/${id}`);
+    return response.data;
+  },
 };
 
 // API методы для предметов

@@ -14,6 +14,7 @@ const RentalDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [confirm, setConfirm] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     const fetchRental = async () => {
@@ -58,6 +59,31 @@ const RentalDetails: React.FC = () => {
       alert(error.response?.data?.message || 'Ошибка подтверждения аренды');
     } finally {
       setConfirm(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!rental) return;
+
+    if (!window.confirm('Вы уверены, что хотите отменить эту аренду?')) {
+      return;
+    }
+
+    try {
+      setCancelling(true);
+      await rentalApi.cancel(rental.id);
+
+      // Обновляем статус локально
+      setRental({
+        ...rental,
+        status: 'CANCELLED'
+      });
+      
+      alert('Аренда успешно отменена!');
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Ошибка отмены аренды');
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -153,6 +179,27 @@ const RentalDetails: React.FC = () => {
                 <>
                   <span>✓</span>
                   Подтвердить аренду
+                </>
+              )}
+            </button>
+          )}
+
+          {/* Кнопка отмены */}
+          {(rental.status === 'PENDING' || rental.status === 'CONFIRMED') && (
+            <button
+              onClick={handleCancel}
+              disabled={cancelling}
+              className="btn btn-danger"
+            >
+              {cancelling ? (
+                <>
+                  <span className="spinner"></span>
+                  Отменяю...
+                </>
+              ) : (
+                <>
+                  <span>✗</span>
+                  Отменить аренду
                 </>
               )}
             </button>

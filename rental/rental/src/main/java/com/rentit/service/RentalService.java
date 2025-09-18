@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,7 +58,7 @@ public class RentalService {
   }
 
   @Transactional(readOnly = true)
-  public Page<RentalResponse> getRentalsByUserId(Long userId,Pageable pageable) {
+  public Page<RentalResponse> getRentalsByUserId(Long userId, Pageable pageable) {
     return rentalRepository.findByUserId(userId, pageable).map(this::mapToResponse);
   }
 
@@ -109,6 +108,8 @@ public class RentalService {
     rentalResponse.setEndDate(rental.getEndDate());
     rentalResponse.setStartDate(rental.getStartDate());
     rentalResponse.setTotalPrice(rental.getTotalPrice());
+    rentalResponse.setRenterId(rental.getUserId());
+    rentalResponse.setLandLordId(rental.getItem().getUserId());
 
     return rentalResponse;
   }
