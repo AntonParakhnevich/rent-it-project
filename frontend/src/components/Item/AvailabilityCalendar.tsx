@@ -60,6 +60,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       isPast: boolean;
       isSelected: boolean;
       isInRange: boolean;
+      isBlockedForEndSelection: boolean;
     }> = [];
 
     // Добавляем пустые ячейки для дней предыдущего месяца
@@ -72,7 +73,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
         isAvailable: false,
         isPast: false,
         isSelected: false,
-        isInRange: false
+        isInRange: false,
+        isBlockedForEndSelection: false
       });
     }
 
@@ -92,6 +94,22 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       const isInRange = canSelectDates && startDate && endDate && 
                        dayDate >= startDate && dayDate <= endDate;
       
+      // Определяем, недоступна ли дата для выбора как конечная (проверим позже)
+      let isBlockedForEndSelection = false;
+      if (canSelectDates && startDate && !endDate && dayDate > startDate) {
+        // Проверяем диапазон от startDate до dayDate
+        const current = new Date(startDate);
+        current.setDate(current.getDate() + 1);
+        while (current < dayDate) {
+          const checkDateString = current.toISOString().split('T')[0];
+          if (unavailableDatesSet.has(checkDateString)) {
+            isBlockedForEndSelection = true;
+            break;
+          }
+          current.setDate(current.getDate() + 1);
+        }
+      }
+      
       days.push({
         day,
         date: dayDate,
@@ -100,7 +118,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
         isAvailable: !isPast && !isUnavailable,
         isPast,
         isSelected: !!isSelected,
-        isInRange: !!isInRange
+        isInRange: !!isInRange,
+        isBlockedForEndSelection
       });
     }
 
@@ -119,7 +138,22 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     setCurrentDate(new Date());
   };
 
-  const handleDateClick = (date: Date) => {
+  // Проверяем, есть ли занятые даты в диапазоне между двумя датами
+  const hasUnavailableDatesInRange = (start: Date, end: Date): boolean => {
+    const current = new Date(start);
+    current.setDate(current.getDate() + 1); // Начинаем с дня после начальной даты
+    
+    while (current < end) {
+      const dateString = current.toISOString().split('T')[0];
+      if (unavailableDatesSet.has(dateString)) {
+        return true;
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    return false;
+  };
+
+  const handleDateClick = (date: Date, dayData: any) => {
     if (!canSelectDates || !onDateSelect) return;
     
     const today = new Date();
@@ -130,12 +164,23 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       return;
     }
 
+    // Если дата заблокирована для выбора как конечная, не даем её выбрать
+    if (dayData.isBlockedForEndSelection) {
+      return;
+    }
+
     if (!startDate || (startDate && endDate)) {
       // Начинаем новый выбор
       onDateSelect(date, null);
     } else if (date >= startDate) {
-      // Выбираем конечную дату
-      onDateSelect(startDate, date);
+      // Проверяем, есть ли занятые даты в диапазоне
+      if (hasUnavailableDatesInRange(startDate, date)) {
+        // Если есть занятые даты в диапазоне, начинаем новый выбор с этой даты
+        onDateSelect(date, null);
+      } else {
+        // Выбираем конечную дату
+        onDateSelect(startDate, date);
+      }
     } else {
       // Если выбрана дата раньше начальной, делаем её начальной
       onDateSelect(date, null);
@@ -203,18 +248,20 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
                     !dayData.isCurrentMonth ? 'other-month' :
                     dayData.isSelected ? 'selected' :
                     dayData.isInRange && !dayData.isSelected ? 'in-range' :
+                    dayData.isBlockedForEndSelection ? 'blocked-for-selection' :
                     dayData.isToday ? 'today' :
                     dayData.isPast ? 'past' :
                     dayData.isAvailable ? 'available' : 'unavailable'
-                  } ${canSelectDates && dayData.isAvailable ? 'clickable' : ''}`}
+                  } ${canSelectDates && dayData.isAvailable && !dayData.isBlockedForEndSelection ? 'clickable' : ''}`}
                   title={
                     dayData.date ? (
                       dayData.isPast ? 'Прошедшая дата' :
+                      dayData.isBlockedForEndSelection ? 'Недоступно - есть занятые даты в диапазоне' :
                       dayData.isAvailable ? (canSelectDates ? 'Кликните для выбора' : 'Доступен для аренды') : 'Недоступен'
                     ) : ''
                   }
-                  onClick={() => dayData.date && dayData.isCurrentMonth && handleDateClick(dayData.date)}
-                  style={{ cursor: canSelectDates && dayData.isAvailable ? 'pointer' : 'default' }}
+                  onClick={() => dayData.date && dayData.isCurrentMonth && handleDateClick(dayData.date, dayData)}
+                  style={{ cursor: canSelectDates && dayData.isAvailable && !dayData.isBlockedForEndSelection ? 'pointer' : 'default' }}
                 >
                   {dayData.day}
                 </div>

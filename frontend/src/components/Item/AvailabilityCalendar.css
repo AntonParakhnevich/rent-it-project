@@ -386,3 +386,22 @@
   background-color: #e3f2fd;
   transform: scale(1.05);
 }
+
+/* Стили для заблокированных дат */
+.day-cell.blocked-for-selection {
+  background-color: #ffebee !important;
+  color: #c62828 !important;
+  cursor: not-allowed !important;
+  position: relative;
+}
+
+.day-cell.blocked-for-selection::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background-color: #c62828;
+  transform: translateY(-50%) rotate(-45deg);
+}
