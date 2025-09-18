@@ -10,6 +10,7 @@ import com.rentit.repository.RentalRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,9 @@ public class RentalService {
   private final RentalRepository rentalRepository;
   private final ItemRepository itemRepository;
 
+  private final static List<RentalStatus> STATUS_FOR_CANCEL = Arrays.asList(RentalStatus.PENDING,
+      RentalStatus.CONFIRMED);
+
   @Transactional
   public RentalResponse createRental(RentalRequest request) {
     Item item = itemRepository.findById(request.getItemId())
@@ -31,7 +35,9 @@ public class RentalService {
 
     // Проверка доступности предмета на указанные даты
     List<Rental> overlappingRentals = rentalRepository.findOverlappingRentals(
-        item.getId(), request.getStartDate(), request.getEndDate());
+        item.getId(), Arrays.asList(RentalStatus.PENDING, RentalStatus.CONFIRMED, RentalStatus.IN_PROGRESS),
+        request.getStartDate(),
+        request.getEndDate());
 
     if (!overlappingRentals.isEmpty()) {
       throw new RuntimeException("Предмет уже забронирован на указанные даты");
@@ -53,7 +59,7 @@ public class RentalService {
   @Transactional(readOnly = true)
   public RentalResponse getRentalById(Long id) {
     Rental rental = rentalRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Аренда не найдена"));
+        .orElseThrow(() -> new RuntimeException("rental not found, id=" + id));
     return mapToResponse(rental);
   }
 
@@ -63,23 +69,45 @@ public class RentalService {
   }
 
   @Transactional
-  public void confirm(Long rentalId) {
-    Rental rental = rentalRepository.findById(rentalId)
-        .orElseThrow(() -> new IllegalArgumentException("rental not found, id=" + rentalId));
-    if (rental.getStatus() == RentalStatus.PENDING) {
-      rental.setStatus(RentalStatus.CONFIRMED);
+  public void cancelById(Long id) {
+    Rental rental = rentalRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("rental not found, id=" + id));
+    if (STATUS_FOR_CANCEL.contains(rental.getStatus()) && LocalDateTime.now().isBefore(rental.getEndDate())) {
+      rental.setStatus(RentalStatus.CANCELLED);
       rentalRepository.save(rental);
+    } else {
+      throw new RuntimeException(
+          String.format("Error cancel,invalid status or dateEnd, status=%s, dateEnd=%s, id=%d", rental.getStatus(),
+              rental.getEndDate(), id));
     }
   }
 
   @Transactional
-  public RentalResponse updateRentalStatus(Long id, RentalStatus status) {
+  public void confirmById(Long id) {
     Rental rental = rentalRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Аренда не найдена"));
+        .orElseThrow(() -> new RuntimeException("rental not found, id=" + id));
+    if (RentalStatus.PENDING.equals(rental.getStatus()) && LocalDateTime.now().isBefore(rental.getStartDate())) {
+      rental.setStatus(RentalStatus.CONFIRMED);
+      rentalRepository.save(rental);
+    } else {
+      throw new RuntimeException(
+          String.format("Error confirm, invalid status or dateEnd, status=%s, dateEnd=%s, id=%d", rental.getStatus(),
+              rental.getEndDate(), id));
+    }
+  }
 
-    rental.setStatus(status);
-    Rental updatedRental = rentalRepository.save(rental);
-    return mapToResponse(updatedRental);
+  @Transactional
+  public void completeById(Long id) {
+    Rental rental = rentalRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("rental not found, id=" + id));
+    if (RentalStatus.CONFIRMED.equals(rental.getStatus())) {
+      rental.setStatus(RentalStatus.COMPLETED);
+      rentalRepository.save(rental);
+    } else {
+      throw new RuntimeException(
+          String.format("Error confirm, invalid status or dateEnd, status=%s, dateEnd=%s, id=%d", rental.getStatus(),
+              rental.getEndDate(), id));
+    }
   }
 
   @Transactional(readOnly = true)

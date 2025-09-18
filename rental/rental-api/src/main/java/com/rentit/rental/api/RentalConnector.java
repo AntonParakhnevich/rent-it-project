@@ -25,7 +25,7 @@ public interface RentalConnector {
   Page<RentalResponse> getAllByOwnerId(@PathVariable("ownerId") Long ownerId, Pageable pageable);
 
   @PostMapping("/rentals/confirm?id={id}")
-  void confirm(@PathVariable("id") Long id);
+  RentalResponse confirm(@PathVariable("id") Long id);
 
   @PostMapping("/rentals")
   RentalResponse createRental(@RequestBody RentalRequest request);

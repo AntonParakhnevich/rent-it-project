@@ -42,13 +42,15 @@ public class RentalController {
   }
 
   @PostMapping("/confirm")
-  public void updateRentalStatus(@RequestParam("id") Long id) {
-    rentalService.confirm(id);
+  public ResponseEntity updateRentalStatus(@RequestParam("id") Long id) {
+    rentalService.confirmById(id);
+    return ResponseEntity.ok().build();
   }
 
   @PutMapping("/complete/{id}")
-  public ResponseEntity<RentalResponse> complete(@PathVariable Long id) {
-    return ResponseEntity.ok(rentalService.updateRentalStatus(id, RentalStatus.COMPLETED));
+  public ResponseEntity complete(@PathVariable Long id) {
+    rentalService.completeById(id);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/renter/{renterId}")
@@ -62,7 +64,8 @@ public class RentalController {
   }
 
   @PutMapping("/cancel/{id}")
-  public ResponseEntity<RentalResponse> cancelRental(@PathVariable Long id) {
-    return ResponseEntity.ok(rentalService.updateRentalStatus(id, RentalStatus.CANCELLED));
+  public ResponseEntity cancelRental(@PathVariable Long id) {
+    rentalService.cancelById(id);
+    return ResponseEntity.ok().build();
   }
 } 
