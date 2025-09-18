@@ -2,6 +2,7 @@ package com.rentit.privatearea.service.rental;
 
 import com.rentit.privatearea.security.SessionService;
 import com.rentit.rental.api.RentalConnector;
+import com.rentit.rental.api.RentalRequest;
 import com.rentit.rental.api.RentalResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,5 +43,11 @@ public class RentalService {
 
   public void confirm(Long id) {
     rentalConnector.confirm(id);
+  }
+
+  public RentalResponse createRental(RentalRequest request) {
+    // Устанавливаем текущего пользователя как арендатора
+    request.setRenterId(sessionService.getCurrentUserId());
+    return rentalConnector.createRental(request);
   }
 }

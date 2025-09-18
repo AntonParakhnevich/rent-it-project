@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "rentalConnector", url = "http://localhost:8081")
 public interface RentalConnector {
@@ -22,8 +23,10 @@ public interface RentalConnector {
   @GetMapping("/rentals/owner/{ownerId}")
   Page<RentalResponse> getAllByOwnerId(@PathVariable("ownerId") Long ownerId, Pageable pageable);
 
-
-
   @PostMapping("/rentals/confirm?id={id}")
   void confirm(@PathVariable("id") Long id);
+
+  @PostMapping("/rentals")
+  RentalResponse createRental(@RequestBody RentalRequest request);
+
 }

@@ -1,7 +1,9 @@
 package com.rentit.privatearea.controller;
 
 import com.rentit.privatearea.service.rental.RentalService;
+import com.rentit.rental.api.RentalRequest;
 import com.rentit.rental.api.RentalResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,5 +48,11 @@ public class RentalController {
   public ResponseEntity<Void> confirm(@RequestParam("id") Long id) {
     rentalService.confirm(id);
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping
+  public ResponseEntity<RentalResponse> createRental(@Valid @RequestBody RentalRequest request) {
+    RentalResponse rental = rentalService.createRental(request);
+    return ResponseEntity.ok(rental);
   }
 }

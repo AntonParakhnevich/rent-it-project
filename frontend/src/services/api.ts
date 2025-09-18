@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LoginRequest, UserCreateRequest, AuthResponse, UserResponse, RentalResponse, ItemRequest, ItemResponse, PageResponse, ItemSearchFilters, UnavailableDatesResponse } from '../types';
+import { LoginRequest, UserCreateRequest, AuthResponse, UserResponse, RentalRequest, RentalResponse, ItemRequest, ItemResponse, PageResponse, ItemSearchFilters, UnavailableDatesResponse } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8078';
 
@@ -86,6 +86,11 @@ export const rentalApi = {
 
   confirm: async (id: number): Promise<void> => {
     await apiClient.post(`/rentals/confirm?id=${id}`);
+  },
+
+  create: async (request: RentalRequest): Promise<RentalResponse> => {
+    const response = await apiClient.post<RentalResponse>('/rentals', request);
+    return response.data;
   },
 };
 

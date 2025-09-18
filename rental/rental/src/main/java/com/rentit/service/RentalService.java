@@ -96,7 +96,7 @@ public class RentalService {
   }
 
   private BigDecimal calculateTotalPrice(LocalDateTime startDate, LocalDateTime endDate, BigDecimal pricePerDay) {
-    long days = ChronoUnit.DAYS.between(startDate, endDate);
+    long days = ChronoUnit.DAYS.between(startDate, endDate) + 1;
     return pricePerDay.multiply(new BigDecimal(days));
   }
 

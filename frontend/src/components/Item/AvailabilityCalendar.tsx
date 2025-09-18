@@ -4,11 +4,19 @@ import './AvailabilityCalendar.css';
 interface AvailabilityCalendarProps {
   itemId: number;
   unavailableDates: string[];
+  canSelectDates?: boolean;
+  startDate?: Date | null;
+  endDate?: Date | null;
+  onDateSelect?: (startDate: Date | null, endDate: Date | null) => void;
 }
 
 const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({ 
   itemId, 
-  unavailableDates 
+  unavailableDates,
+  canSelectDates = false,
+  startDate = null,
+  endDate = null,
+  onDateSelect
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -50,6 +58,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       isToday: boolean;
       isAvailable: boolean;
       isPast: boolean;
+      isSelected: boolean;
+      isInRange: boolean;
     }> = [];
 
     // Добавляем пустые ячейки для дней предыдущего месяца
@@ -60,7 +70,9 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
         isCurrentMonth: false,
         isToday: false,
         isAvailable: false,
-        isPast: false
+        isPast: false,
+        isSelected: false,
+        isInRange: false
       });
     }
 
@@ -74,13 +86,21 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       const isPast = dayDate < today;
       const isUnavailable = unavailableDatesSet.has(dateString);
       
+      const isSelected = canSelectDates && ((startDate && dayDate.getTime() === startDate.getTime()) ||
+                        (endDate && dayDate.getTime() === endDate.getTime()));
+      
+      const isInRange = canSelectDates && startDate && endDate && 
+                       dayDate >= startDate && dayDate <= endDate;
+      
       days.push({
         day,
         date: dayDate,
         isCurrentMonth: true,
         isToday: dayDate.toDateString() === today.toDateString(),
         isAvailable: !isPast && !isUnavailable,
-        isPast
+        isPast,
+        isSelected: !!isSelected,
+        isInRange: !!isInRange
       });
     }
 
@@ -97,6 +117,29 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
 
   const goToToday = () => {
     setCurrentDate(new Date());
+  };
+
+  const handleDateClick = (date: Date) => {
+    if (!canSelectDates || !onDateSelect) return;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Проверяем, что дата не в прошлом и доступна
+    if (date < today || unavailableDatesSet.has(date.toISOString().split('T')[0])) {
+      return;
+    }
+
+    if (!startDate || (startDate && endDate)) {
+      // Начинаем новый выбор
+      onDateSelect(date, null);
+    } else if (date >= startDate) {
+      // Выбираем конечную дату
+      onDateSelect(startDate, date);
+    } else {
+      // Если выбрана дата раньше начальной, делаем её начальной
+      onDateSelect(date, null);
+    }
   };
 
   const days = getDaysInMonth(currentDate);
@@ -158,16 +201,20 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
                   key={`${weekIndex}-${dayIndex}`}
                   className={`day-cell ${
                     !dayData.isCurrentMonth ? 'other-month' :
+                    dayData.isSelected ? 'selected' :
+                    dayData.isInRange && !dayData.isSelected ? 'in-range' :
                     dayData.isToday ? 'today' :
                     dayData.isPast ? 'past' :
                     dayData.isAvailable ? 'available' : 'unavailable'
-                  }`}
+                  } ${canSelectDates && dayData.isAvailable ? 'clickable' : ''}`}
                   title={
                     dayData.date ? (
                       dayData.isPast ? 'Прошедшая дата' :
-                      dayData.isAvailable ? 'Доступен для аренды' : 'Недоступен'
+                      dayData.isAvailable ? (canSelectDates ? 'Кликните для выбора' : 'Доступен для аренды') : 'Недоступен'
                     ) : ''
                   }
+                  onClick={() => dayData.date && dayData.isCurrentMonth && handleDateClick(dayData.date)}
+                  style={{ cursor: canSelectDates && dayData.isAvailable ? 'pointer' : 'default' }}
                 >
                   {dayData.day}
                 </div>

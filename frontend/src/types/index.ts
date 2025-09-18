@@ -39,6 +39,15 @@ export interface UserResponse {
 }
 
 // Типы для аренды
+export interface RentalRequest {
+  itemId: number;
+  startDate: string;
+  endDate: string;
+  totalPrice?: number;
+  depositAmount?: number;
+  status?: string;
+}
+
 export interface RentalResponse {
   id: number;
   itemId: number;

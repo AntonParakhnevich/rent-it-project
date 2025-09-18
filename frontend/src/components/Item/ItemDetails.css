@@ -439,3 +439,49 @@
     padding: 20px;
   }
 }
+
+/* Стили для резюме аренды */
+.rental-summary {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.rental-summary h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.rental-info p {
+  margin: 8px 0;
+  color: #495057;
+}
+
+.total-cost {
+  border-top: 1px solid #dee2e6;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.total-cost p {
+  font-size: 1.1rem;
+  color: #007bff;
+  font-weight: 600;
+}
+
+.rental-instruction {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.rental-instruction p {
+  margin: 0;
+}

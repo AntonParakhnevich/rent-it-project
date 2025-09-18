@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ItemResponse, UserResponse, UnavailableDatesResponse } from '../../types';
-import { itemApi, userApi } from '../../services/api';
+import { itemApi, userApi, rentalApi } from '../../services/api';
 import { usePermissions } from '../../hooks/usePermissions';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import './ItemDetails.css';
@@ -17,6 +17,9 @@ const ItemDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+  const [isCreatingRental, setIsCreatingRental] = useState(false);
 
   const categories = {
     'ELECTRONICS': 'Электроника',
@@ -90,7 +93,7 @@ const ItemDetails: React.FC = () => {
     };
 
     loadItemDetails();
-  }, [itemId]); // Убираем canViewUsers из зависимостей
+  }, [itemId, canViewUsers]); // Добавляем canViewUsers в зависимости
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -108,6 +111,48 @@ const ItemDetails: React.FC = () => {
   const prevImage = () => {
     if (item?.images && item.images.length > 1) {
       setCurrentImageIndex((prev) => (prev - 1 + item.images.length) % item.images.length);
+    }
+  };
+
+  const handleDateSelect = (startDate: Date | null, endDate: Date | null) => {
+    setSelectedStartDate(startDate);
+    setSelectedEndDate(endDate);
+  };
+
+  const calculateTotalPrice = () => {
+    if (!selectedStartDate || !selectedEndDate || !item) return 0;
+    
+    const days = Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    return days * item.pricePerDay;
+  };
+
+  const calculateDays = () => {
+    if (!selectedStartDate || !selectedEndDate) return 0;
+    
+    return Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  };
+
+  const handleCreateRental = async () => {
+    if (!selectedStartDate || !selectedEndDate || !item) return;
+
+    setIsCreatingRental(true);
+    try {
+      await rentalApi.create({
+        itemId: item.id,
+        startDate: selectedStartDate.toISOString(),
+        endDate: selectedEndDate.toISOString(),
+        totalPrice: calculateTotalPrice(),
+        depositAmount: item.depositAmount,
+        status: 'PENDING'
+      });
+
+      alert('Заявка на аренду успешно создана! Ожидайте подтверждения от владельца.');
+      navigate('/my-rentals');
+    } catch (err: any) {
+      console.error('Ошибка при создании аренды:', err);
+      alert(err.response?.data?.message || 'Ошибка при создании аренды');
+    } finally {
+      setIsCreatingRental(false);
     }
   };
 
@@ -273,14 +318,40 @@ const ItemDetails: React.FC = () => {
       {/* Календарь доступности */}
       {item.available && (
         <div className="availability-section">
-          <h3>Календарь доступности</h3>
+          <h3>Выбор дат аренды</h3>
           <p className="calendar-description">
-            Зеленые даты - свободны для аренды, красные - заняты
+            Кликните на даты для выбора периода аренды. Зеленые даты - свободны, красные - заняты
           </p>
           <AvailabilityCalendar 
             itemId={item.id}
             unavailableDates={unavailableDates?.unavailableDates || []}
+            canSelectDates={true}
+            startDate={selectedStartDate}
+            endDate={selectedEndDate}
+            onDateSelect={handleDateSelect}
           />
+          
+          {/* Информация о выбранных датах */}
+          {selectedStartDate && (
+            <div className="rental-summary">
+              <h4>Детали аренды</h4>
+              <div className="rental-info">
+                <p><strong>Дата начала:</strong> {selectedStartDate.toLocaleDateString('ru-RU')}</p>
+                {selectedEndDate && (
+                  <>
+                    <p><strong>Дата окончания:</strong> {selectedEndDate.toLocaleDateString('ru-RU')}</p>
+                    <p><strong>Количество дней:</strong> {calculateDays()}</p>
+                    <p><strong>Стоимость за день:</strong> {formatPrice(item.pricePerDay)}</p>
+                    <p><strong>Залог:</strong> {formatPrice(item.depositAmount)}</p>
+                    <div className="total-cost">
+                      <p><strong>Общая стоимость аренды:</strong> {formatPrice(calculateTotalPrice())}</p>
+                      <p><strong>Итого к оплате:</strong> {formatPrice(calculateTotalPrice() + item.depositAmount)}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -288,15 +359,19 @@ const ItemDetails: React.FC = () => {
       <div className="item-actions">
         {item.available ? (
           <div className="action-buttons">
-            <button 
-              className="rent-btn primary"
-              onClick={() => {
-                // TODO: Реализовать создание заявки на аренду
-                alert('Функция создания заявки на аренду будет реализована позже');
-              }}
-            >
-              Арендовать
-            </button>
+            {selectedStartDate && selectedEndDate ? (
+              <button 
+                className="rent-btn primary"
+                onClick={handleCreateRental}
+                disabled={isCreatingRental}
+              >
+                {isCreatingRental ? 'Создание...' : `Арендовать за ${formatPrice(calculateTotalPrice() + item.depositAmount)}`}
+              </button>
+            ) : (
+              <div className="rental-instruction">
+                <p>Выберите даты аренды в календаре выше</p>
+              </div>
+            )}
             <button 
               className="contact-btn secondary"
               onClick={() => {
