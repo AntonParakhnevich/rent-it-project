@@ -86,7 +86,7 @@ public class RentalService {
   public void confirmById(Long id) {
     Rental rental = rentalRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("rental not found, id=" + id));
-    if (RentalStatus.PENDING.equals(rental.getStatus()) && LocalDateTime.now().isBefore(rental.getStartDate())) {
+    if (RentalStatus.PENDING.equals(rental.getStatus())) {
       rental.setStatus(RentalStatus.CONFIRMED);
       rentalRepository.save(rental);
     } else {
