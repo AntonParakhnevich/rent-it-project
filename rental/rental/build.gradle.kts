@@ -30,9 +30,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.9")
+    implementation("org.apache.kafka:kafka-clients:3.9.1")
 
     implementation(project(mapOf("path" to ":user:user-api")))
     implementation(project(mapOf("path" to ":rental:rental-api")))
+    implementation(project(mapOf("path" to ":common:debezium")))
 
     // Database
     runtimeOnly("com.mysql:mysql-connector-j")

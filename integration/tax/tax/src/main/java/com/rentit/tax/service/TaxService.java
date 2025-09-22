@@ -38,7 +38,6 @@ public class TaxService {
     }
     create(request.getUserId(), status);
     boolean isValid = TaxStatus.ACTIVE.equals(status)
-        && data != null
         && getFullName(request).equals(data.getRow().getVnaimp());
     return new TaxResponse(isValid);
   }

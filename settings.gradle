@@ -5,9 +5,8 @@ include 'rental:rental',
     'user:user-api',
     'notification:internal-notification:internal-notification',
     'notification:internal-notification:internal-notification-api',
-    'debezium:debezium',
-    'debezium:debezium-api',
     'gateway:private-area:private-area',
     'frontend',
     'integration:tax:tax',
-    'integration:tax:tax-api'
+    'integration:tax:tax-api',
+    'common:debezium'

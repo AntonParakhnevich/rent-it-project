@@ -1,7 +1,7 @@
 package com.rentit.internal.notification.service.rentalscreated;
 
-import com.rentit.debezium.api.RentalCreatedEvent;
 import com.rentit.internal.notification.dto.InternalNotificationModel;
+import com.rentit.rental.api.RentalCreatedEvent;
 
 public interface RentalsCreatedNotificationService {
 

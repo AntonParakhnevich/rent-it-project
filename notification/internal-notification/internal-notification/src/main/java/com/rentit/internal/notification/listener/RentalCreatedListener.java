@@ -2,10 +2,10 @@ package com.rentit.internal.notification.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rentit.debezium.api.RentalCreatedEvent;
 import com.rentit.internal.notification.dto.InternalNotificationModel;
 import com.rentit.internal.notification.service.InternalNotificationService;
 import com.rentit.internal.notification.service.rentalscreated.RentalsCreatedNotificationService;
+import com.rentit.rental.api.RentalCreatedEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class RentalCreatedListener {
     this.services = services;
   }
 
-  @KafkaListener(id = "rentalsCreated", topics = "RENTAL_CREATED")
+  @KafkaListener(id = "rentit-debezium-produce", topics = "RENTAL_CREATED")
   public void listen(String message) {
     try {
       RentalCreatedEvent event = objectMapper.readValue(message, RentalCreatedEvent.class);
