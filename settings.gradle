@@ -9,4 +9,5 @@ include 'rental:rental',
     'frontend',
     'integration:tax:tax',
     'integration:tax:tax-api',
-    'common:debezium'
+    'common:debezium',
+    'common:liquibase'
